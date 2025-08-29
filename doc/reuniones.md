@@ -42,4 +42,16 @@ Definir estructura para experimentos comparativos
 
 Usar distintos modelos y temperaturas
 
+## 28/08/25
+Usar carpetas por fecha para experimentos
+Copiar prompts en MD
+
+### Caso generado por Gastón
+- Usa artefactos de Claude
+- Agente generado pide letra de Kata y rúbrica
+- Itera sobre el artefecto generado para que muestre código, historial de promots
+
+- Usar misma tabla para registrar resultados de los distintos experimentos
+- Poner foco en la evaluación pedagógica
+- Nota sobre la rúbrica: es larga, analizar si se puede dividir en partes o simplificar
 
