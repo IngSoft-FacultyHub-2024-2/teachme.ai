@@ -21,7 +21,7 @@ The goal is to prototype the assistant behavior using Claude artifact.
 
 [Prompts](Prompt.md)
 
-## Model ##
+## Model
 
 Claude Sonnet 4
 
