@@ -96,7 +96,7 @@ Si corresponde, mencionar los antecedentes, referencias o modelos usados para ge
 
 **Anexo I – Imagen ilustrativa del concepto**
 
-![Diagrama](images/proposal.png)
+![Diagrama]
 
 
 1. En caso que el desarrollo de una extensión sea más complicada de los esperado, se utilizará una ventana de dialogo que pueda integrase al layout del escritorio del estudiante. [↑](#footnote-ref-1)
