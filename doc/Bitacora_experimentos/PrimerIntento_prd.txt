@@ -1,5 +1,5 @@
 
-
+Viejo: Primer intento utilizado en Claude Code (despues pasé a usar Claude directamente)
 
 
 code a webapp using TypeScript. 
