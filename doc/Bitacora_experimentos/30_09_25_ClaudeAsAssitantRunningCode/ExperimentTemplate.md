@@ -16,7 +16,8 @@
 
 ### Some conclusions:
 
-- 
+- The prompt behaved as an assistant, but as a chat. I was thinking that it was an artifact but it was not. 
+- A Claude artifact if a Claude generated app like this one [Kata Teachng Assistant](https://claude.ai/public/artifacts/16ab01af-df55-491e-9c91-5f10a9e471ce)
 
 ### Used prompts
 [Prompt used first try](doc/Bitacora_experimentos/30_09_25_ClaudeAsAssitantRunningCode/UserPrompt_Spnet4.5.txt)
