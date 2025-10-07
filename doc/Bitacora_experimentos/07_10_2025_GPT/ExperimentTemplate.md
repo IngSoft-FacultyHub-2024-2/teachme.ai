@@ -30,16 +30,14 @@
 
 
 ### Used prompts
-
+[chat after adding few shot prompting](https://chatgpt.com/share/68e567a6-3e28-800d-a208-be3a0ab56725)
+[last chat with improved prompt](https://chatgpt.com/share/68e567a6-3e28-800d-a208-be3a0ab56725)
 
 ## Model
 
 GPT-5
 
 ## Result (Chat / Artifact / Gem / GPT)
-
-[chat after adding few shot prompting](https://chatgpt.com/share/68e567a6-3e28-800d-a208-be3a0ab56725)
-[last chat with improved prompt](https://chatgpt.com/share/68e567a6-3e28-800d-a208-be3a0ab56725)
 
 [GPT](https://chatgpt.com/g/g-68e54d4c9da88191accfdb9c8add775e-teachme-ai)
 
