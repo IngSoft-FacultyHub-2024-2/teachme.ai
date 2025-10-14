@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  teachme-ai:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: teachme-ai:latest
+    container_name: teachme-ai-app
+    stdin_open: true
+    tty: true
+    environment:
+      - NODE_ENV=production
+    env_file:
+      - .env
+    volumes:
+      # Mount for development (optional, comment out for production)
+      # - ./src:/app/src
+      # - ./tsconfig.json:/app/tsconfig.json
+      - /app/node_modules
+    restart: unless-stopped
+
+  # Development service (optional)
+  teachme-ai-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    image: teachme-ai:dev
+    container_name: teachme-ai-app-dev
+    stdin_open: true
+    tty: true
+    environment:
+      - NODE_ENV=development
+    env_file:
+      - .env
+    volumes:
+      - ./src:/app/src
+      - ./tsconfig.json:/app/tsconfig.json
+      - /app/node_modules
+    command: npm run dev
+    restart: unless-stopped
+    profiles:
+      - dev
