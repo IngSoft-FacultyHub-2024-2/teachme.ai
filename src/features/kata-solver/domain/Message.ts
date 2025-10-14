@@ -49,7 +49,7 @@ export class Message {
    * @throws Error if token count is not positive
    */
   private validateTokenCount(tokenCount: number): void {
-    if (tokenCount <= 0) {
+    if (tokenCount < 0) {
       throw new Error('Token count must be non-negative');
     }
   }

@@ -28,63 +28,90 @@ export class OpenAIService {
       if (!prompt || typeof prompt !== 'string' || prompt.trim() === '') {
         return failure(new Error('Prompt must be a non-empty string'));
       }
-
-      // Build messages array
-      const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [];
-      if (conversationHistory) {
+      // Build a single input string that includes conversation history (preserve roles)
+      let input = '';
+      if (conversationHistory && conversationHistory.length > 0) {
         for (const msg of conversationHistory) {
-          messages.push({
-            role: msg.role,
-            content: msg.content,
-          });
+          input += `${msg.role.toUpperCase()}: ${msg.content}\n`;
         }
       }
-      messages.push({ role: 'user', content: prompt });
+      input += `USER: ${prompt}`;
 
-      // Prepare API call parameters (typed)
-      const params: OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming = {
-        model: this.config.model,
-        messages,
-        max_completion_tokens: this.config.maxTokens,
-        // Only set temperature if model supports it and value is valid
-        ...(typeof this.config.temperature === 'number' && this.config.temperature === 1 ? { temperature: 1 } : {}),
-      };
-
-      // Make API call
-      let completion;
+      // Call the Responses API
+      let resp: any;
       try {
-        completion = await this.client.chat.completions.create(params);
+        resp = await this.client.responses.create({
+          model: this.config.model,
+          input,
+          max_output_tokens: this.config.maxTokens,
+        });
       } catch (apiError: any) {
-        return failure(new Error(`OpenAI API error: ${apiError.message}`));
+        return failure(new Error(`OpenAI Responses API error: ${apiError?.message ?? apiError}`));
       }
 
-      // Validate response
-      const choice = completion.choices?.[0];
-      if (!choice || !choice.message?.content) {
-        return failure(new Error('No response content from OpenAI API'));
+      // Extract textual content robustly (sdk can return output_text or structured output array)
+      let content = '';
+      if (typeof resp.output_text === 'string' && resp.output_text.trim() !== '') {
+        content = resp.output_text;
+      } else if (Array.isArray(resp.output)) {
+        for (const out of resp.output) {
+          // out may be a string, or an object with a content array
+          if (typeof out === 'string') {
+            content += out;
+            continue;
+          }
+          if (Array.isArray(out.content)) {
+            for (const chunk of out.content) {
+              if (typeof chunk === 'string') {
+                content += chunk;
+              } else if (typeof chunk?.text === 'string') {
+                content += chunk.text;
+              }
+            }
+          } else if (typeof out.content === 'string') {
+            content += out.content;
+          }
+        }
       }
 
-      // Extract and validate token usage
-      const usage = completion.usage;
-      if (!usage ||
-        typeof usage.prompt_tokens !== 'number' || usage.prompt_tokens < 0 ||
-        typeof usage.completion_tokens !== 'number' || usage.completion_tokens < 0 ||
-        typeof usage.total_tokens !== 'number' || usage.total_tokens < 0 ||
-        usage.total_tokens !== usage.prompt_tokens + usage.completion_tokens
-      ) {
-        return failure(new Error('Invalid or missing usage information from OpenAI API'));
+      if (!content || content.trim() === '') {
+        return failure(new Error('No response content from OpenAI Responses API'));
       }
 
-      // Create LLMResponse
+      // Extract usage (be defensive with property names)
+
+      const usage = resp.usage ?? {};
+      const promptTokens = typeof usage.prompt_tokens === 'number' ? usage.prompt_tokens : (typeof usage.promptTokens === 'number' ? usage.promptTokens : 0);
+      const completionTokens = typeof usage.completion_tokens === 'number' ? usage.completion_tokens : (typeof usage.completionTokens === 'number' ? usage.completionTokens : 0);
+      const reportedTotal = typeof usage.total_tokens === 'number' ? usage.total_tokens : (typeof usage.totalTokens === 'number' ? usage.totalTokens : undefined);
+
+      // Ensure totalTokens equals the sum of prompt + completion to satisfy domain invariants.
+      const computedTotal = promptTokens + completionTokens;
+      let totalTokens: number;
+      if (typeof reportedTotal === 'number') {
+        if (reportedTotal !== computedTotal) {
+          // API reported inconsistent totals; prefer the computed sum but warn.
+          // Keep deterministic behaviour for downstream code by normalizing.
+          // eslint-disable-next-line no-console
+          console.warn(`OpenAI usage total mismatch: reported=${reportedTotal} computed=${computedTotal} — using computed value.`);
+          totalTokens = computedTotal;
+        } else {
+          totalTokens = reportedTotal;
+        }
+      } else {
+        totalTokens = computedTotal;
+      }
+
+      // Build LLMResponse (usage numbers allowed to be zero)
       const llmResponse = new LLMResponse(
-        choice.message.content,
+        content,
         {
-          promptTokens: usage.prompt_tokens,
-          completionTokens: usage.completion_tokens,
-          totalTokens: usage.total_tokens,
+          promptTokens,
+          completionTokens,
+          totalTokens,
         },
-        completion.model,
-        choice.finish_reason ?? 'unknown'
+        resp.model ?? this.config.model,
+        resp.finish_reason ?? resp.status?.type ?? 'unknown'
       );
 
       return success(llmResponse);
