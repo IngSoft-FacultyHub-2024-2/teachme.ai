@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 import { KataInstructionUI } from './ui/KataInstructionUI';
@@ -42,6 +43,7 @@ class ConsoleApp {
         message: 'What would you like to do?',
         choices: [
           { name: 'Load Kata Instructions', value: 'kata' },
+          { name: 'Start KataSolver Conversation', value: 'conversation' },
           { name: 'Exit', value: 'exit' },
         ],
       },
@@ -55,6 +57,12 @@ class ConsoleApp {
       case 'kata':
         await this.kataUI.showKataSelection();
         break;
+      case 'conversation': {
+        const { KataSolverConversationUI } = await import('./ui/KataSolverConversationUI');
+        const conversationUI = new KataSolverConversationUI();
+        await conversationUI.start();
+        break;
+      }
       case 'exit':
         this.running = false;
         break;

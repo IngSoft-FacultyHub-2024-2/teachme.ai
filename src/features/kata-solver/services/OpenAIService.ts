@@ -19,21 +19,18 @@ export class OpenAIService {
     });
   }
 
-  /**
-   * Sends a message to the OpenAI API
-   * @param prompt - The user's message/prompt
-   * @param conversationHistory - Optional previous messages for context
-   * @returns Result containing LLMResponse or error
-   */
   public async sendMessage(
     prompt: string,
     conversationHistory?: Message[]
   ): Promise<Result<LLMResponse>> {
     try {
+      // Validate prompt
+      if (!prompt || typeof prompt !== 'string' || prompt.trim() === '') {
+        return failure(new Error('Prompt must be a non-empty string'));
+      }
+
       // Build messages array
       const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [];
-
-      // Add conversation history if provided
       if (conversationHistory) {
         for (const msg of conversationHistory) {
           messages.push({
@@ -42,31 +39,40 @@ export class OpenAIService {
           });
         }
       }
+      messages.push({ role: 'user', content: prompt });
 
-      // Add current prompt
-      messages.push({
-        role: 'user',
-        content: prompt,
-      });
+      // Prepare API call parameters (typed)
+      const params: OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming = {
+        model: this.config.model,
+        messages,
+        max_completion_tokens: this.config.maxTokens,
+        // Only set temperature if model supports it and value is valid
+        ...(typeof this.config.temperature === 'number' && this.config.temperature === 1 ? { temperature: 1 } : {}),
+      };
 
       // Make API call
-      const completion = await this.client.chat.completions.create({
-        model: this.config.model,
-        messages: messages,
-        temperature: this.config.temperature,
-        max_tokens: this.config.maxTokens,
-      });
+      let completion;
+      try {
+        completion = await this.client.chat.completions.create(params);
+      } catch (apiError: any) {
+        return failure(new Error(`OpenAI API error: ${apiError.message}`));
+      }
 
       // Validate response
-      const choice = completion.choices[0];
-      if (!choice || !choice.message.content) {
+      const choice = completion.choices?.[0];
+      if (!choice || !choice.message?.content) {
         return failure(new Error('No response content from OpenAI API'));
       }
 
-      // Extract token usage
+      // Extract and validate token usage
       const usage = completion.usage;
-      if (!usage) {
-        return failure(new Error('No usage information from OpenAI API'));
+      if (!usage ||
+        typeof usage.prompt_tokens !== 'number' || usage.prompt_tokens < 0 ||
+        typeof usage.completion_tokens !== 'number' || usage.completion_tokens < 0 ||
+        typeof usage.total_tokens !== 'number' || usage.total_tokens < 0 ||
+        usage.total_tokens !== usage.prompt_tokens + usage.completion_tokens
+      ) {
+        return failure(new Error('Invalid or missing usage information from OpenAI API'));
       }
 
       // Create LLMResponse
