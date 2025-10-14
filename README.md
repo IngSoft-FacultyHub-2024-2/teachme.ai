@@ -52,13 +52,25 @@ docker run -it --rm teachme-ai:latest
 docker run -it --rm --env-file .env teachme-ai:latest
 ```
 
-#### Using Docker Compose (Recommended)
+#### Using Docker Compose
+
+**For Interactive Applications (Recommended):**
 
 ```bash
-# Production mode
-docker-compose up
+# Build the image
+docker-compose build
 
-# Run in background
+# Run interactively (allows user input)
+docker-compose run --rm teachme-ai
+
+# Stop containers
+docker-compose down
+```
+
+**For Background Services:**
+
+```bash
+# Run in background (not suitable for interactive input)
 docker-compose up -d
 
 # Development mode (with hot reload)
@@ -70,6 +82,8 @@ docker-compose down
 # Rebuild and start
 docker-compose up --build
 ```
+
+**Important:** Since this is an interactive console application, use `docker-compose run --rm teachme-ai` or `docker run -it --rm --env-file .env teachme-ai:latest` to properly attach stdin/stdout for user input.
 
 ### Docker Images
 
@@ -86,21 +100,71 @@ cp .env.example .env
 
 See `.env.example` for available configuration options.
 
+## Features
+
+### Kata Instruction Loader
+
+Load and view coding kata instructions from markdown files. The application automatically detects kata instruction files in the `src/inputData/` directory.
+
+**How to use:**
+1. Run the application (`npm run dev`)
+2. Select "Load Kata Instructions" from the main menu
+3. Choose a kata from the available list
+4. View formatted instructions including:
+   - Problem description for each stage
+   - Sample outputs
+   - Evaluation criteria
+
+**Adding new katas:**
+Place markdown files with "KataInstructions" in the filename into `src/inputData/`. The file should follow this structure:
+
+```markdown
+# Kata Name: YourKataName
+
+## Stage 1
+
+### Problem:
+Description of the problem
+
+Sample output:
+Expected output example
+
+## Stage 2
+
+### Problem:
+Additional requirements
+
+## Code Quality Evaluation Criteria:
+Level 1: Beginner (0-3 points)
+Description
+
+Level 2: Advanced (4-6 points)
+Description
+```
+
 ## Project Structure
 
 ```
 src/
-├── features/          # Feature modules (feature-by-package)
-│   ├── learning/
-│   ├── progress/
-│   └── settings/
-├── shared/            # Shared code
-│   ├── ui/           # UI components
-│   ├── types/        # TypeScript types
-│   └── utils/        # Utility functions
-└── index.ts          # Application entry point
+├── features/                    # Feature modules (feature-by-package)
+│   └── kata-instruction/       # Kata instruction loader
+│       ├── domain/             # Domain models
+│       ├── services/           # Business logic
+│       └── KataInstructionFeature.ts
+├── shared/                     # Shared code
+│   ├── types/                  # TypeScript types (Result, etc.)
+│   └── utils/                  # Utility functions
+├── ui/                         # UI components
+│   └── KataInstructionUI.ts
+├── inputData/                  # Kata instruction files
+│   └── KataInstructions.md
+└── index.ts                    # Application entry point
 
-tests/                # Test files (mirrors src structure)
+tests/                          # Test files (mirrors src structure)
+├── features/
+│   └── kata-instruction/
+│       ├── domain/
+│       └── services/
 ```
 
 ## Code Quality

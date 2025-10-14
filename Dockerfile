@@ -29,6 +29,9 @@ RUN npm ci --only=production
 # Copy built application from builder stage
 COPY --from=builder /app/dist ./dist
 
+# Copy inputData folder with kata instructions
+COPY --from=builder /app/src/inputData ./src/inputData
+
 # Set environment to production
 ENV NODE_ENV=production
 

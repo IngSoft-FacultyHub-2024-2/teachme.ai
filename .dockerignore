@@ -37,7 +37,9 @@ docker-compose.yml
 
 # Documentation
 README.md
-*.md
+claude.md
+# Keep kata instruction files
+!src/inputData/*.md
 
 # CI/CD
 .github/
