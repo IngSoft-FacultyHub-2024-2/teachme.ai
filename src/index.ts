@@ -1,5 +1,6 @@
 import inquirer from 'inquirer';
 import chalk from 'chalk';
+import { KataInstructionUI } from './ui/KataInstructionUI';
 
 interface MenuAnswer {
   action: string;
@@ -7,6 +8,11 @@ interface MenuAnswer {
 
 class ConsoleApp {
   private running: boolean = true;
+  private readonly kataUI: KataInstructionUI;
+
+  constructor() {
+    this.kataUI = new KataInstructionUI();
+  }
 
   public async start(): Promise<void> {
     this.displayWelcome();
@@ -34,12 +40,24 @@ class ConsoleApp {
         type: 'list',
         name: 'action',
         message: 'What would you like to do?',
-        choices: [{ name: 'Exit', value: 'exit' }],
+        choices: [
+          { name: 'Load Kata Instructions', value: 'kata' },
+          { name: 'Exit', value: 'exit' },
+        ],
       },
     ]);
 
-    if (answer.action === 'exit') {
-      this.running = false;
+    await this.handleMenuChoice(answer.action);
+  }
+
+  private async handleMenuChoice(choice: string): Promise<void> {
+    switch (choice) {
+      case 'kata':
+        await this.kataUI.showKataSelection();
+        break;
+      case 'exit':
+        this.running = false;
+        break;
     }
   }
 }
