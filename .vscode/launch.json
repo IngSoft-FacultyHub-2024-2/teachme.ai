@@ -1,0 +1,64 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run index.ts (ts-node)",
+      "type": "pwa-node",
+      "request": "launch",
+      "runtimeArgs": ["-r", "ts-node/register"],
+      "args": ["${workspaceFolder}/src/index.ts"],
+      "cwd": "${workspaceFolder}",
+      "envFile": "${workspaceFolder}/.env",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "Attach to Node (inspect)",
+      "type": "pwa-node",
+      "request": "attach",
+      "port": 9229,
+      "restart": false,
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "Debug Jest (current file)",
+      "type": "pwa-node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+      "args": ["${file}", "--runInBand"],
+      "cwd": "${workspaceFolder}",
+      "envFile": "${workspaceFolder}/.env",
+      "console": "integratedTerminal",
+      "disableOptimisticBPs": true,
+      "skipFiles": ["<node_internals>/**"]
+    }
+  ]
+}
+{
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Attach to ts-node",
+      "type": "node",
+      "request": "attach",
+      "port": 9229,
+      "restart": false,
+      "protocol": "inspector",
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "Run index.ts (ts-node)",
+      "type": "pwa-node",
+      "request": "launch",
+      "runtimeArgs": ["-r", "ts-node/register"],
+      "args": ["${workspaceFolder}/src/index.ts"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "env": {
+        "NODE_ENV": "development"
+      }
+    }
+  ]
+}

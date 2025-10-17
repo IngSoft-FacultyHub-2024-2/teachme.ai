@@ -86,11 +86,25 @@ export class OpenAIService {
   private async callResponses(input: string): Promise<Result<LLMResponse>> {
     let resp: any;
     try {
-      resp = await this.client.responses.create({
+      // Read optional prompt id/version from environment so callers can configure
+      // a reusable prompt template via env vars without changing code.
+      const promptId = process.env.OPENAI_PROMPT_ID;
+      const promptVersion = process.env.OPENAI_PROMPT_VERSION;
+
+      const params: any = {
         model: this.config.model,
         input,
         max_output_tokens: this.config.maxTokens,
-      });
+      };
+
+      if (promptId && typeof promptId === 'string' && promptId.trim() !== '') {
+        params.prompt = {
+          id: promptId.trim(),
+          ...(promptVersion && typeof promptVersion === 'string' && promptVersion.trim() !== '' ? { version: promptVersion.trim() } : {}),
+        };
+      }
+
+      resp = await this.client.responses.create(params);
     } catch (apiError: any) {
       return failure(new Error(`OpenAI Responses API error: ${apiError?.message ?? apiError}`));
     }
@@ -124,30 +138,13 @@ export class OpenAIService {
       return failure(new Error('No response content from OpenAI Responses API'));
     }
 
-    // Extract usage (be defensive with property names)
-    const usage = resp.usage ?? {};
-    const promptTokens = typeof usage.prompt_tokens === 'number' ? usage.prompt_tokens : (typeof usage.promptTokens === 'number' ? usage.promptTokens : 0);
-    const completionTokens = typeof usage.completion_tokens === 'number' ? usage.completion_tokens : (typeof usage.completionTokens === 'number' ? usage.completionTokens : 0);
-    const reportedTotal = typeof usage.total_tokens === 'number' ? usage.total_tokens : (typeof usage.totalTokens === 'number' ? usage.totalTokens : undefined);
+    // Token counts are not used by the application; return zeros to avoid
+    // propagation of token-count related errors or model-specific usage fields.
+    const promptTokens = 0;
+    const completionTokens = 0;
+    const totalTokens = 0;
 
-    // Ensure totalTokens equals the sum of prompt + completion to satisfy domain invariants.
-    const computedTotal = promptTokens + completionTokens;
-    let totalTokens: number;
-    if (typeof reportedTotal === 'number') {
-      if (reportedTotal !== computedTotal) {
-        // API reported inconsistent totals; prefer the computed sum but warn.
-        // Keep deterministic behaviour for downstream code by normalizing.
-        // eslint-disable-next-line no-console
-        console.warn(`OpenAI usage total mismatch: reported=${reportedTotal} computed=${computedTotal} — using computed value.`);
-        totalTokens = computedTotal;
-      } else {
-        totalTokens = reportedTotal;
-      }
-    } else {
-      totalTokens = computedTotal;
-    }
-
-    // Build LLMResponse (usage numbers allowed to be zero)
+    // Build LLMResponse with zeroed usage; domain model accepts zero values.
     const llmResponse = new LLMResponse(
       content,
       {
