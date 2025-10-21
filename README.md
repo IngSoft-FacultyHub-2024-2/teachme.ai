@@ -9,16 +9,90 @@ Console-based TypeScript application with Docker support.
 
 ## Local Development
 
-### Install Dependencies
+### Run locally (Windows PowerShell)
+
+Prerequisites: Node.js 20+ and a configured `.env` file. Copy the example and edit values first:
+
+```powershell
+# from project root (PowerShell)
+Copy-Item .env.example .env -Force
+# edit .env with your favorite editor (or set env vars in the shell)
+notepad .env
+```
+
+Install dependencies once:
+
+```powershell
+npm install
+```
+
+Run in development mode (hot reload using the project npm script):
+
+```powershell
+npm run dev
+```
+
+Run the app directly with ts-node (no build step):
+
+```powershell
+npx ts-node src/index.ts
+```
+
+Build and run the compiled JS (production-like):
+
+```powershell
+npm run build
+node dist/index.js
+```
+
+Quick run with an ad-hoc environment value (PowerShell):
+
+```powershell
+# $env:OPENAI_API_KEY = 'sk-...'
+npx ts-node src/index.ts
+```
+
+### Run locally (macOS / Linux — bash or zsh)
+
+Prerequisites: Node.js 20+ and a configured `.env` file. Copy the example and edit values first:
+
+```bash
+# from project root (bash/zsh)
+cp .env.example .env
+# edit .env with your favorite editor
+open -a TextEdit .env  # macOS example (or use nano, vim)
+```
+
+Install dependencies once:
 
 ```bash
 npm install
 ```
 
-### Run in Development Mode
+Run in development mode (hot reload using the project npm script):
 
 ```bash
 npm run dev
+```
+
+Run the app directly with ts-node (no build step):
+
+```bash
+npx ts-node src/index.ts
+```
+
+Build and run the compiled JS (production-like):
+
+```bash
+npm run build
+node dist/index.js
+```
+
+Quick run with an ad-hoc environment value (bash/zsh):
+
+```bash
+# export OPENAI_API_KEY="sk-..."
+npx ts-node src/index.ts
 ```
 
 ### Available Scripts
