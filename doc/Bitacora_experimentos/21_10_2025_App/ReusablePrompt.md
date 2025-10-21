@@ -1,5 +1,5 @@
 # Reusable Prompt 
-Model 5-mini
+Model 5-mini_1.0.0
 text.format: text
 effort: medium
 verbosity: medium

@@ -2,21 +2,25 @@
 
 
 ## Goal
-- Crear una app que use mas de un modelo. uno para generar el código a partir de promtps y otro para evaluar la calidad del codigo y tal vez un tercero para evluar la calidad del prompting
+- Create an app that uses more than one model: one to generate code from prompts, another to evaluate the code quality, and maybe a third to evaluate the prompting quality.
 
 
 ## What was done
 
-- se crea una app en typescript que recibe los prompts y ejecuta
-- se está utilizando laAPI de openAI para Responses con la feature de prompts reusables que permiten cambiar el modelo, y los parametros del mismo sin afectar el código
-- se modificó el prompt para que focalice en la generacion de codigo y en no ayudar al estudiante, solo dar hints
+-A TypeScript app was created that receives the prompts and executes.
 
+ - We are using the OpenAI Responses API with the reusable prompts feature, which lets us change the model and its parameters without changing the code.
+
+- The prompt was modified to focus on code generation and not helping the student, only giving hints.
+
+- The prompt was modified to generate Python code and show what it did.
 
 
 ### Some conclusions:
 
-- el asistente funciona mucho mejor
-- no puede ejecutar código porque es en javascript y no hay un REPL intergado para JS, si lo hay para Python, lo voy a cambiar para eso
+- The assistant works much better.
+
+- It cannot run code because it is in JavaScript and there is no integrated REPL for JS; there is one for Python, so I will change to that.
 
 
 ### Used prompts
