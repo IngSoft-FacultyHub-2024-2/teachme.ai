@@ -44,7 +44,7 @@ class ConsoleApp {
         name: 'action',
         message: 'What would you like to do?',
         choices: [
-          { name: 'Load Kata Instructions', value: 'kata' },
+          { name: 'Load Kata Files', value: 'kata' },
           { name: 'Start KataSolver Conversation', value: 'conversation' },
           { name: 'Exit', value: 'exit' },
         ],

@@ -1,26 +1,11 @@
-import * as fs from 'fs/promises';
-import * as path from 'path';
-import { Result, success, failure } from '../../../shared/types/Result';
+// This file is deprecated and kept only for backward compatibility.
+// Markdown support has been removed. Use FileReader for JSON files only.
 
+/**
+ * @deprecated This class is no longer supported. Use FileReader instead.
+ */
 export class MarkdownReader {
-  public async readFile(filePath: string): Promise<Result<string>> {
-    try {
-      const content = await fs.readFile(filePath, 'utf-8');
-      return success(content);
-    } catch (error) {
-      return failure(error as Error);
-    }
-  }
-
-  public async listMarkdownFiles(
-    directoryPath: string
-  ): Promise<Result<string[]>> {
-    try {
-      const files = await fs.readdir(directoryPath);
-      const markdownFiles = files.filter((file) => path.extname(file) === '.md');
-      return success(markdownFiles);
-    } catch (error) {
-      return failure(error as Error);
-    }
+  constructor() {
+    throw new Error('MarkdownReader is deprecated. Use FileReader for file operations instead.');
   }
 }

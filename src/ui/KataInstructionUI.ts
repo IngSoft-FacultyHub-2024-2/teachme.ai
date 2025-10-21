@@ -2,6 +2,7 @@ import inquirer from 'inquirer';
 import chalk from 'chalk';
 import { KataInstructionFeature } from '../features/kata-instruction/KataInstructionFeature';
 import { KataInstruction } from '../features/kata-instruction/domain/KataInstruction';
+import { KataEvaluationRubric } from '../features/kata-instruction/domain/KataEvaluationRubric';
 
 export class KataInstructionUI {
   private readonly kataFeature: KataInstructionFeature;
@@ -11,7 +12,7 @@ export class KataInstructionUI {
   }
 
   public async showKataSelection(): Promise<void> {
-    console.log(chalk.blue.bold('\n=== Kata Instructions ===\n'));
+    console.log(chalk.blue.bold('\n=== Kata Files ===\n'));
 
     // List available kata files
     const listResult = await this.kataFeature.listAvailableKatas();
@@ -22,16 +23,16 @@ export class KataInstructionUI {
     }
 
     if (listResult.value.length === 0) {
-      console.log(chalk.yellow('No kata instruction files found in inputData folder.'));
+      console.log(chalk.yellow('No JSON files found in inputData folder.'));
       return;
     }
 
-    // Let user select a kata
+    // Let user select a file
     const answer = await inquirer.prompt<{ kataFile: string }>([
       {
         type: 'list',
         name: 'kataFile',
-        message: 'Select a kata to view:',
+        message: 'Select a file to view:',
         choices: [...listResult.value, new inquirer.Separator(), 'Back to main menu'],
       },
     ]);
@@ -40,20 +41,27 @@ export class KataInstructionUI {
       return;
     }
 
-    // Load and display the selected kata
-    await this.displayKataInstructions(answer.kataFile);
+    // Load and display the selected file
+    await this.displayFile(answer.kataFile);
   }
 
-  private async displayKataInstructions(filename: string): Promise<void> {
-    const loadResult = await this.kataFeature.loadKataInstruction(filename);
+  private async displayFile(filename: string): Promise<void> {
+    // Try to load as kata instruction first
+    const kataResult = await this.kataFeature.loadKataInstruction(filename);
 
-    if (!loadResult.success) {
-      console.log(chalk.red(`\nError loading kata: ${loadResult.error.message}\n`));
-      return;
+    if (kataResult.success) {
+      this.renderKata(kataResult.value);
+    } else {
+      // Try to load as evaluation rubric
+      const rubricResult = await this.kataFeature.loadKataEvaluationRubric(filename);
+
+      if (rubricResult.success) {
+        this.renderRubric(rubricResult.value);
+      } else {
+        console.log(chalk.red(`\nError loading file: ${rubricResult.error.message}\n`));
+        return;
+      }
     }
-
-    const kata = loadResult.value;
-    this.renderKata(kata);
 
     // Wait for user to press enter
     await inquirer.prompt([
@@ -98,6 +106,44 @@ export class KataInstructionUI {
       kata.evaluationCriteria.forEach((level) => {
         console.log(chalk.cyan(`\n${level.levelId}:`));
         console.log(chalk.gray(level.description));
+      });
+    }
+
+    console.log('\n' + '='.repeat(60) + '\n');
+  }
+
+  private renderRubric(rubric: KataEvaluationRubric): void {
+    console.log('\n' + '='.repeat(60));
+    console.log(chalk.green.bold(`  ${rubric.rubric.title}`));
+    console.log(chalk.white(`  Total Max Score: ${rubric.rubric.total_max_score}`));
+    console.log('='.repeat(60) + '\n');
+
+    // Display categories
+    rubric.rubric.categories.forEach((category) => {
+      console.log(chalk.cyan.bold(`\n▶ ${category.name} (Max Score: ${category.max_score})`));
+      console.log(chalk.white('─'.repeat(60)));
+
+      category.levels.forEach((level) => {
+        console.log(chalk.magenta(`\n  Level ${level.level}: ${level.name}`));
+        console.log(chalk.gray(`  Score Range: ${level.score_range.min}-${level.score_range.max}`));
+
+        if (level.criteria && level.criteria.length > 0) {
+          console.log(chalk.white('\n  Criteria:'));
+          level.criteria.forEach((criterion) => {
+            console.log(chalk.gray(`    • [${criterion.score_range.min}-${criterion.score_range.max}] ${criterion.description}`));
+          });
+        }
+      });
+    });
+
+    // Display overall classification
+    if (rubric.rubric.overall_classification && rubric.rubric.overall_classification.length > 0) {
+      console.log(chalk.magenta.bold('\n\n▶ Overall Classification'));
+      console.log(chalk.white('─'.repeat(60)));
+
+      rubric.rubric.overall_classification.forEach((classification) => {
+        console.log(chalk.cyan(`\n${classification.name}:`));
+        console.log(chalk.gray(`  Score Range: ${classification.score_range.min}-${classification.score_range.max}`));
       });
     }
 
