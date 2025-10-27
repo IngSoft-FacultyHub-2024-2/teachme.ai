@@ -1,0 +1,9 @@
+Estuve probando lo del chatbot. Me parece que es una excelente herramienta para incorporar en diferentes niveles de la carrera, siempre que se le de las instrucciones y un prompt adecuado. 
+Respecto al ejercicio no tuve ninguna dificultad que impidiera el desarrollo de la misma. Sólo me pareció que el output esperado del stage 2 no estaba del todo claro (esto sin considerar los ejemplos, con los ejemplos quedaba claro). 
+Sacando ese detalle de lado, que es más particular del ejercicio que de la herramienta, lo veo interesante para ir incorporandola a diferentes asignaturas, tanto de la cátedra como en otras asignaturas de los primeros semestres (Programación 1, Programación 2, taller). 
+ 
+Desde el lado de FIS, sería interesante generar algún ejercicio que pida codificar alguna clase en JavaScript y que lleve a los estudiantes a construir (de forma incremental) un prompt que involucre varias de las buenas prácticas que damos en la parte de calidad de código. Con eso podemos motivar a los estudiantes a generar mejores prompts y vincular el uso de herramientas de IA con el contenido del curso. Sería interesante poder presentarlo y sugerir que usen las buenas prácticas de prompting para el desarrollo del obligatorio. Creo que con eso podemos enseñar a hacer un uso responsable de la IA, alineado con los objetivos del curso.
+
+La experiencia con el chatbot me pareció muy positiva. Valoro mucho que el chatbot permita iterar en las diferentes etapas para lograr un prompt más completo. 
+Otro aspecto muy positivo es que se devuelva una checklist de buenas prácticas (tanto de prompting como de código), que además de reconocer los puntos fuertes, también ofrece diferentes oportunidades de mejora.
+Te comparto el enlace con el chat de la sesión: https://chatgpt.com/share/68f6d523-ced4-8007-ab1a-3a94091aa404
