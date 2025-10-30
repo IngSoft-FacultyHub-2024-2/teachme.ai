@@ -13,7 +13,7 @@
 
 - The prompt was modified to focus on code generation and not helping the student, only giving hints.
 
-- The prompt was modified to generate Python code and show what it did.
+- The prompt was modified to generate Python code and show what it did. It uses tools by function calling. used openAI code interpreter
 
 
 ### Some conclusions:

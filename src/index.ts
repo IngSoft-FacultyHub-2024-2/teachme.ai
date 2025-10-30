@@ -44,7 +44,8 @@ class ConsoleApp {
         name: 'action',
         message: 'What would you like to do?',
         choices: [
-          { name: 'Load Kata Instructions', value: 'kata' },
+          { name: 'Load Kata Instruction File', value: 'kata' },
+          { name: 'Load Rubric Instruction File', value: 'rubric' },
           { name: 'Start KataSolver Conversation', value: 'conversation' },
           { name: 'Exit', value: 'exit' },
         ],
@@ -57,7 +58,10 @@ class ConsoleApp {
   private async handleMenuChoice(choice: string): Promise<void> {
     switch (choice) {
       case 'kata':
-        await this.kataUI.showKataSelection();
+        await this.kataUI.showKataInstructionSelection();
+        break;
+      case 'rubric':
+        await this.kataUI.showRubricSelection();
         break;
       case 'conversation': {
         const { KataSolverConversationUI } = await import('./ui/KataSolverConversationUI');
