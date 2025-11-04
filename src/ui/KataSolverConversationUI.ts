@@ -1,15 +1,24 @@
 import inquirer from 'inquirer';
 import chalk from 'chalk';
+import ora from 'ora';
 import { KataSolverFacade } from '../features/kata-solver/KataSolverFacade';
 import { CodeExtractorFeature } from '../features/code-extractor/CodeExtractorFeature';
+import { KataEvaluatorFeature } from '../features/kata-evaluator/KataEvaluatorFeature';
+import { KataEvaluationRubricService } from '../features/kata-instruction/services/KataEvaluationRubricService';
 
 export class KataSolverConversationUI {
   private readonly facade: KataSolverFacade;
   private readonly codeExtractor: CodeExtractorFeature;
+  private readonly kataEvaluator: KataEvaluatorFeature;
+  private readonly rubricService: KataEvaluationRubricService;
+  private evaluationOrdinal: number;
 
   constructor() {
     this.facade = new KataSolverFacade();
     this.codeExtractor = new CodeExtractorFeature();
+    this.kataEvaluator = new KataEvaluatorFeature();
+    this.rubricService = new KataEvaluationRubricService();
+    this.evaluationOrdinal = 0;
   }
 
   /**
@@ -25,7 +34,11 @@ export class KataSolverConversationUI {
         message: 'Enter your initial prompt:',
       },
     ]);
+
+    const spinner = ora('Thinking...').start();
     const startResult = await this.facade.startConversation(initialPrompt);
+    spinner.stop();
+
     if (!startResult.success) {
       console.log(chalk.red('Error: ' + startResult.error?.message));
       return;
@@ -59,7 +72,10 @@ export class KataSolverConversationUI {
       }
 
       // Continue normal conversation
+      const spinner = ora('Thinking...').start();
       const responseResult = await this.facade.continueConversation(conversationId, userInput);
+      spinner.stop();
+
       if (!responseResult.success) {
         console.log(chalk.red('Error: ' + responseResult.error?.message));
         break;
@@ -89,10 +105,11 @@ export class KataSolverConversationUI {
       return;
     }
 
-    console.log(chalk.gray('Extracting code from conversation...'));
+    const spinner = ora('Extracting code from conversation...').start();
 
     // Extract code using CodeExtractor
     const extractionResult = await this.codeExtractor.extractCode(conversationText);
+    spinner.stop();
 
     if (!extractionResult.success) {
       console.log(chalk.red('Error extracting code: ' + extractionResult.error.message));
@@ -132,22 +149,49 @@ export class KataSolverConversationUI {
       return;
     }
 
-    // Send extracted code to the conversation for evaluation
-    const evaluationPrompt = `Please evaluate the following code:\n\n\`\`\`${extracted.language ?? ''}\n${extracted.getCleanCode()}\n\`\`\``;
+    // Load evaluation rubric
+    let evaluationSpinner = ora('Loading evaluation rubric...').start();
+    const rubricResult = await this.rubricService.loadRubric('kata_evaluation_rubric.json');
 
-    console.log(chalk.gray('Sending code for evaluation...'));
-
-    const responseResult = await this.facade.continueConversation(
-      conversationId,
-      evaluationPrompt
-    );
-
-    if (!responseResult.success) {
-      console.log(chalk.red('Error: ' + responseResult.error?.message));
+    if (!rubricResult.success) {
+      evaluationSpinner.fail('Error loading rubric');
+      console.log(chalk.red('Error: ' + rubricResult.error.message));
+      console.log(chalk.yellow('Make sure kata_evaluation_rubric.json exists in src/inputData/'));
       return;
     }
 
-    console.log(chalk.green('\nAssistant: ' + responseResult.value));
+    evaluationSpinner.succeed('Rubric loaded');
+
+    // Increment ordinal for this evaluation
+    this.evaluationOrdinal++;
+
+    evaluationSpinner = ora(`Evaluating code (attempt #${this.evaluationOrdinal})...`).start();
+
+    // Evaluate using KataEvaluatorFeature
+    const evaluationResult = await this.kataEvaluator.evaluate(
+      extracted,
+      rubricResult.value,
+      this.evaluationOrdinal
+    );
+
+    if (!evaluationResult.success) {
+      evaluationSpinner.fail('Evaluation failed');
+      console.log(chalk.red('Error: ' + evaluationResult.error.message));
+      return;
+    }
+
+    evaluationSpinner.succeed('Evaluation completed');
+
+    const evaluation = evaluationResult.value;
+
+    // Display evaluation results
+    console.log(chalk.green('\n✓ Evaluation completed!\n'));
+    console.log(chalk.white.bold('=== Evaluation Results ==='));
+    console.log(chalk.white(`Evaluation #${evaluation.ordinal}`));
+    console.log(chalk.white(`Timestamp: ${evaluation.timestamp.toLocaleString()}`));
+    console.log(chalk.gray('─'.repeat(60)));
+    console.log(chalk.cyan(evaluation.responseString));
+    console.log(chalk.gray('─'.repeat(60)));
     console.log('');
   }
 
