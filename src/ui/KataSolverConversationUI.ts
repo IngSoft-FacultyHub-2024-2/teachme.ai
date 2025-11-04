@@ -5,12 +5,14 @@ import { KataSolverFacade } from '../features/kata-solver/KataSolverFacade';
 import { CodeExtractorFeature } from '../features/code-extractor/CodeExtractorFeature';
 import { KataEvaluatorFeature } from '../features/kata-evaluator/KataEvaluatorFeature';
 import { KataEvaluationRubricService } from '../features/kata-instruction/services/KataEvaluationRubricService';
+import { KataInstructionUI } from './KataInstructionUI';
 
 export class KataSolverConversationUI {
   private readonly facade: KataSolverFacade;
   private readonly codeExtractor: CodeExtractorFeature;
   private readonly kataEvaluator: KataEvaluatorFeature;
   private readonly rubricService: KataEvaluationRubricService;
+  private readonly kataInstructionUI: KataInstructionUI;
   private evaluationOrdinal: number;
 
   constructor() {
@@ -18,6 +20,7 @@ export class KataSolverConversationUI {
     this.codeExtractor = new CodeExtractorFeature();
     this.kataEvaluator = new KataEvaluatorFeature();
     this.rubricService = new KataEvaluationRubricService();
+    this.kataInstructionUI = new KataInstructionUI();
     this.evaluationOrdinal = 0;
   }
 
@@ -26,61 +29,72 @@ export class KataSolverConversationUI {
    */
   public async start(): Promise<void> {
     console.log(chalk.blue.bold('\n=== KataSolver Conversation ==='));
-    console.log(chalk.gray('Commands: /evaluate - Extract and evaluate code | /help - Show help | /exit - End conversation\n'));
-    const { initialPrompt } = await inquirer.prompt([
-      {
-        type: 'input',
-        name: 'initialPrompt',
-        message: 'Enter your initial prompt:',
-      },
-    ]);
+    console.log(chalk.gray('Commands: /kata - Show kata instructions | /evaluate - Extract and evaluate code | /help - Show help | /exit - End conversation\n'));
 
-    const spinner = ora('Thinking...').start();
-    const startResult = await this.facade.startConversation(initialPrompt);
-    spinner.stop();
+    let conversationId: string | undefined;
 
-    if (!startResult.success) {
-      console.log(chalk.red('Error: ' + startResult.error?.message));
-      return;
-    }
-    let conversationId = startResult.value.conversationId;
-    let lastResponse = startResult.value.response;
-    console.log(chalk.green('Assistant: ' + lastResponse));
     while (true) {
       const { userInput } = await inquirer.prompt([
         {
           type: 'input',
           name: 'userInput',
-          message: chalk.yellow('You:'),
+          message: conversationId ? chalk.yellow('You:') : 'Enter your prompt or command:',
         },
       ]);
 
-      // Handle special commands
+      // Handle /exit command
       if (userInput.trim() === '/exit') {
         console.log(chalk.blue('Conversation ended.'));
         break;
       }
 
-      if (userInput.trim() === '/evaluate') {
-        await this.handleEvaluateCommand(conversationId);
-        continue;
-      }
-
+      // Handle /help command
       if (userInput.trim() === '/help') {
         this.showHelp();
         continue;
       }
 
-      // Continue normal conversation
-      const spinner = ora('Thinking...').start();
-      const responseResult = await this.facade.continueConversation(conversationId, userInput);
-      spinner.stop();
-
-      if (!responseResult.success) {
-        console.log(chalk.red('Error: ' + responseResult.error?.message));
-        break;
+      // Handle /kata command
+      if (userInput.trim() === '/kata') {
+        await this.handleKataCommand();
+        continue;
       }
-      console.log(chalk.green('Assistant: ' + responseResult.value));
+
+      // Handle /evaluate command (requires active conversation)
+      if (userInput.trim() === '/evaluate') {
+        if (!conversationId) {
+          console.log(chalk.yellow('No active conversation. Start a conversation first before evaluating code.\n'));
+          continue;
+        }
+        await this.handleEvaluateCommand(conversationId);
+        continue;
+      }
+
+      // Start or continue conversation
+      if (!conversationId) {
+        // Starting new conversation
+        const spinner = ora('Thinking...').start();
+        const startResult = await this.facade.startConversation(userInput);
+        spinner.stop();
+
+        if (!startResult.success) {
+          console.log(chalk.red('Error: ' + startResult.error?.message));
+          return;
+        }
+        conversationId = startResult.value.conversationId;
+        console.log(chalk.green('Assistant: ' + startResult.value.response));
+      } else {
+        // Continue existing conversation
+        const spinner = ora('Thinking...').start();
+        const responseResult = await this.facade.continueConversation(conversationId, userInput);
+        spinner.stop();
+
+        if (!responseResult.success) {
+          console.log(chalk.red('Error: ' + responseResult.error?.message));
+          break;
+        }
+        console.log(chalk.green('Assistant: ' + responseResult.value));
+      }
     }
   }
 
@@ -196,11 +210,19 @@ export class KataSolverConversationUI {
   }
 
   /**
+   * Handles the /kata command - loads and displays kata instructions
+   */
+  private async handleKataCommand(): Promise<void> {
+    await this.kataInstructionUI.showKataInstructionSelection();
+  }
+
+  /**
    * Shows available commands
    */
   private showHelp(): void {
     console.log(chalk.blue.bold('\n=== Available Commands ==='));
     console.log(chalk.white('  /evaluate') + chalk.gray(' - Extract code from conversation and send for evaluation'));
+    console.log(chalk.white('  /kata    ') + chalk.gray(' - Load and display kata instructions'));
     console.log(chalk.white('  /help    ') + chalk.gray(' - Show this help message'));
     console.log(chalk.white('  /exit    ') + chalk.gray(' - End the conversation'));
     console.log('');
