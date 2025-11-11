@@ -1,11 +1,23 @@
 import { KataEvaluationRubricService } from '../../../../src/features/kata-instruction/services/KataEvaluationRubricService';
 import { KataEvaluationRubric } from '../../../../src/features/kata-instruction/domain/KataEvaluationRubric';
+import { KataFileConfig } from '../../../../src/services/KataFileConfig';
 import * as path from 'path';
 import fs from 'fs';
 
 describe('KataEvaluationRubricService', () => {
   const inputDataPath = path.join(__dirname, '../../../../src/inputData');
-  const service = new KataEvaluationRubricService(inputDataPath);
+
+  // Create a mock config for testing
+  const mockConfig = {
+    inputDataPath,
+    defaultInstructionFile: 'kata-instructions.json',
+    defaultRubricFile: 'kata_evaluation_rubric.json',
+    getDefaultInstructionPath: () => path.join(inputDataPath, 'kata-instructions.json'),
+    getDefaultRubricPath: () => path.join(inputDataPath, 'kata_evaluation_rubric.json'),
+    isValid: () => true,
+  } as KataFileConfig;
+
+  const service = new KataEvaluationRubricService(mockConfig);
 
   it('fails on empty JSON', async () => {
     const file = 'empty.json';

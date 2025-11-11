@@ -174,71 +174,155 @@ cp .env.example .env
 
 See `.env.example` for available configuration options.
 
+### Kata File Configuration
+
+The application uses environment variables to configure kata instruction and evaluation rubric files:
+
+- `KATA_INPUT_DATA_PATH` - Directory containing kata files (default: `./src/inputData`)
+- `KATA_DEFAULT_INSTRUCTION_FILE` - Default kata instruction file (default: `kata-instructions.json`)
+- `KATA_DEFAULT_RUBRIC_FILE` - Default evaluation rubric file (default: `kata_evaluation_rubric.json`)
+
+These files are preloaded on application startup for instant access.
+
 ## Features
 
-### Kata Instruction Loader
+### File Preloading on Startup
 
-Load and view coding kata instructions from markdown files. The application automatically detects kata instruction files in the `src/inputData/` directory.
+The application automatically preloads kata instruction and evaluation rubric files on startup:
 
-**How to use:**
-1. Run the application (`npm run dev`)
-2. Select "Load Kata Instructions" from the main menu
-3. Choose a kata from the available list
-4. View formatted instructions including:
-   - Problem description for each stage
-   - Sample outputs
-   - Evaluation criteria
+- **Kata Instructions** - Preloaded from configured file (default: `kata-instructions.json`)
+- **Evaluation Rubric** - Preloaded from configured file (default: `kata_evaluation_rubric.json`)
 
-**Adding new katas:**
-Place markdown files with "KataInstructions" in the filename into `src/inputData/`. The file should follow this structure:
+Files are loaded once at startup and cached in memory for instant access throughout the session.
 
-```markdown
-# Kata Name: YourKataName
+### Main Menu Options
 
-## Stage 1
+1. **View Kata Instruction** - Display the preloaded kata instructions
+2. **View Evaluation Rubric** - Display the preloaded evaluation rubric
+3. **Start KataSolver Conversation** - Interactive AI conversation for solving katas
+4. **Exit** - Exit the application
 
-### Problem:
-Description of the problem
+### KataSolver Conversation
 
-Sample output:
-Expected output example
+Interactive AI-powered conversation mode for working through kata problems:
 
-## Stage 2
+**Available Commands:**
+- `/kata` - Display kata instructions during conversation
+- `/rubric` - Display evaluation rubric during conversation
+- `/evaluate` - Extract code from conversation and evaluate against rubric
+- `/help` - Show all available commands
+- `/exit` - End the conversation
 
-### Problem:
-Additional requirements
+**Features:**
+- Conversational AI assistance for solving kata problems
+- Real-time code extraction from conversation history
+- Automated code evaluation against rubric criteria
+- Score tracking across multiple evaluation attempts
+- Invalid command detection with helpful error messages
 
-## Code Quality Evaluation Criteria:
-Level 1: Beginner (0-3 points)
-Description
+### Kata Instruction Format
 
-Level 2: Advanced (4-6 points)
-Description
+Kata instructions support JSON format with multiple stages:
+
+```json
+{
+  "name": "Kata Name",
+  "stages": [
+    {
+      "stageNumber": 1,
+      "title": "Stage Title",
+      "problem": "Problem description",
+      "sampleOutput": "Expected output",
+      "requirements": ["Requirement 1", "Requirement 2"]
+    }
+  ],
+  "evaluationCriteria": [
+    {
+      "levelId": "Level 1",
+      "description": "Criteria description"
+    }
+  ]
+}
+```
+
+### Evaluation Rubric Format
+
+Evaluation rubrics support structured JSON format with categories and scoring levels:
+
+```json
+{
+  "rubric": {
+    "title": "Rubric Title",
+    "total_max_score": 100,
+    "categories": [
+      {
+        "name": "Category Name",
+        "max_score": 30,
+        "levels": [
+          {
+            "level": 1,
+            "name": "Level Name",
+            "score_range": { "min": 0, "max": 10 },
+            "criteria": [
+              {
+                "description": "Criterion description",
+                "score_range": { "min": 0, "max": 5 }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "overall_classification": [
+      {
+        "name": "Classification Name",
+        "score_range": { "min": 0, "max": 50 }
+      }
+    ]
+  }
+}
 ```
 
 ## Project Structure
 
 ```
 src/
-├── features/                    # Feature modules (feature-by-package)
-│   └── kata-instruction/       # Kata instruction loader
-│       ├── domain/             # Domain models
-│       ├── services/           # Business logic
-│       └── KataInstructionFeature.ts
-├── shared/                     # Shared code
-│   ├── types/                  # TypeScript types (Result, etc.)
-│   └── utils/                  # Utility functions
-├── ui/                         # UI components
-│   └── KataInstructionUI.ts
-├── inputData/                  # Kata instruction files
-│   └── KataInstructions.md
-└── index.ts                    # Application entry point
+├── features/                           # Feature modules (feature-by-package)
+│   ├── kata-instruction/              # Kata instruction loader
+│   │   ├── domain/                    # Domain models (KataInstruction, KataEvaluationRubric)
+│   │   ├── services/                  # Business logic (FileReader, JsonParser, RubricService)
+│   │   └── KataInstructionFeature.ts
+│   ├── kata-solver/                   # AI conversation solver
+│   │   ├── domain/                    # Conversation, Message models
+│   │   ├── services/                  # OpenAI integration
+│   │   └── KataSolverFacade.ts
+│   ├── code-extractor/                # Code extraction from conversation
+│   │   ├── domain/                    # ExtractedCode model
+│   │   └── services/                  # Extraction logic
+│   └── kata-evaluator/                # Code evaluation against rubric
+│       ├── domain/                    # KataEvaluation model
+│       └── services/                  # Evaluation logic
+├── services/                          # Application-wide services
+│   └── KataFileConfig.ts              # Environment-based file configuration
+├── shared/                            # Shared code
+│   ├── types/                         # TypeScript types (Result, etc.)
+│   └── utils/                         # Utility functions
+├── ui/                                # UI components
+│   ├── KataInstructionUI.ts          # Kata/Rubric display
+│   └── KataSolverConversationUI.ts   # Conversation interface
+├── inputData/                         # Kata instruction and rubric files
+│   ├── kata-instructions.json
+│   └── kata_evaluation_rubric.json
+└── index.ts                           # Application entry point
 
-tests/                          # Test files (mirrors src structure)
+tests/                                 # Test files (mirrors src structure)
 ├── features/
-│   └── kata-instruction/
-│       ├── domain/
-│       └── services/
+│   ├── kata-instruction/
+│   ├── kata-solver/
+│   ├── code-extractor/
+│   └── kata-evaluator/
+└── services/
+    └── KataFileConfig.test.ts
 ```
 
 ## Code Quality

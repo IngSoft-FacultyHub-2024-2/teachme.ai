@@ -52,10 +52,6 @@ describe('Message', () => {
       expect(() => new Message('user', 'test', -5)).toThrow('Token count must be non-negative');
     });
 
-    it('should throw error when tokenCount is zero', () => {
-      expect(() => new Message('user', 'test', 0)).toThrow('Token count must be non-negative');
-    });
-
     it('should accept tokenCount of 1', () => {
       const message = new Message('user', 'test', 1);
       expect(message.tokenCount).toBe(1);

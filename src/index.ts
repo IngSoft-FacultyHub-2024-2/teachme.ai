@@ -3,7 +3,12 @@ import path from 'path';
 import dotenv from 'dotenv';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
+import ora from 'ora';
 import { KataInstructionUI } from './ui/KataInstructionUI';
+import { KataFileConfig } from './services/KataFileConfig';
+import { KataInstructionFeature } from './features/kata-instruction/KataInstructionFeature';
+import { KataInstruction } from './features/kata-instruction/domain/KataInstruction';
+import { KataEvaluationRubric } from './features/kata-instruction/domain/KataEvaluationRubric';
 
 interface MenuAnswer {
   action: string;
@@ -11,20 +16,77 @@ interface MenuAnswer {
 
 class ConsoleApp {
   private running: boolean = true;
-  private readonly kataUI: KataInstructionUI;
+  private kataUI: KataInstructionUI;
+  private readonly config: KataFileConfig;
+  private readonly kataFeature: KataInstructionFeature;
+  private preloadedKataInstruction?: KataInstruction;
+  private preloadedRubric?: KataEvaluationRubric;
 
   constructor() {
+    this.config = new KataFileConfig();
+    this.kataFeature = new KataInstructionFeature(this.config);
+    // KataUI will be initialized after preloading
     this.kataUI = new KataInstructionUI();
   }
 
   public async start(): Promise<void> {
     this.displayWelcome();
+    await this.preloadKataFiles();
 
     while (this.running) {
       await this.showMainMenu();
     }
 
     this.displayGoodbye();
+  }
+
+  /**
+   * Preloads default kata instruction and rubric files on startup
+   */
+  private async preloadKataFiles(): Promise<void> {
+    console.log(chalk.cyan('\nInitializing kata files...'));
+
+    // Preload kata instruction file
+    const instructionSpinner = ora(`Loading ${this.config.defaultInstructionFile}...`).start();
+    const instructionResult = await this.kataFeature.loadKataInstruction(
+      this.config.defaultInstructionFile
+    );
+
+    if (instructionResult.success) {
+      this.preloadedKataInstruction = instructionResult.value;
+      instructionSpinner.succeed(
+        chalk.green(`Loaded kata: ${instructionResult.value.name}`)
+      );
+    } else {
+      instructionSpinner.warn(
+        chalk.yellow(`Could not load ${this.config.defaultInstructionFile}: ${instructionResult.error.message}`)
+      );
+    }
+
+    // Preload rubric file
+    const rubricSpinner = ora(`Loading ${this.config.defaultRubricFile}...`).start();
+    const rubricResult = await this.kataFeature.loadKataEvaluationRubric(
+      this.config.defaultRubricFile
+    );
+
+    if (rubricResult.success) {
+      this.preloadedRubric = rubricResult.value;
+      rubricSpinner.succeed(
+        chalk.green(`Loaded rubric: ${rubricResult.value.rubric.title}`)
+      );
+    } else {
+      rubricSpinner.warn(
+        chalk.yellow(`Could not load ${this.config.defaultRubricFile}: ${rubricResult.error.message}`)
+      );
+    }
+
+    // Initialize KataUI with preloaded data
+    this.kataUI = new KataInstructionUI(
+      this.preloadedKataInstruction,
+      this.preloadedRubric
+    );
+
+    console.log('');
   }
 
   private displayWelcome(): void {
@@ -44,8 +106,8 @@ class ConsoleApp {
         name: 'action',
         message: 'What would you like to do?',
         choices: [
-          { name: 'Load Kata Instruction File', value: 'kata' },
-          { name: 'Load Rubric Instruction File', value: 'rubric' },
+          { name: 'View Kata Instruction', value: 'kata' },
+          { name: 'View Evaluation Rubric', value: 'rubric' },
           { name: 'Start KataSolver Conversation', value: 'conversation' },
           { name: 'Exit', value: 'exit' },
         ],
@@ -65,7 +127,10 @@ class ConsoleApp {
         break;
       case 'conversation': {
         const { KataSolverConversationUI } = await import('./ui/KataSolverConversationUI');
-        const conversationUI = new KataSolverConversationUI();
+        const conversationUI = new KataSolverConversationUI(
+          this.preloadedKataInstruction,
+          this.preloadedRubric
+        );
         await conversationUI.start();
         break;
       }
