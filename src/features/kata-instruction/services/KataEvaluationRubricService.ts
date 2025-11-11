@@ -2,13 +2,16 @@ import * as path from 'path';
 import { FileReader } from './FileReader';
 import { KataEvaluationRubric } from '../domain/KataEvaluationRubric';
 import { Result, failure, success } from '../../../shared/types/Result';
+import { KataFileConfig } from '../../../services/KataFileConfig';
 
 export class KataEvaluationRubricService {
   private readonly inputDataPath: string;
   private readonly fileReader: FileReader;
+  private readonly config: KataFileConfig;
 
-  constructor(inputDataPath?: string) {
-    this.inputDataPath = inputDataPath ?? path.join(process.cwd(), 'src', 'inputData');
+  constructor(config?: KataFileConfig) {
+    this.config = config ?? new KataFileConfig();
+    this.inputDataPath = this.config.inputDataPath;
     this.fileReader = new FileReader();
   }
 

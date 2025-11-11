@@ -1,122 +1,80 @@
 import inquirer from 'inquirer';
 import chalk from 'chalk';
-import { KataInstructionFeature } from '../features/kata-instruction/KataInstructionFeature';
 import { KataInstruction } from '../features/kata-instruction/domain/KataInstruction';
 import { KataEvaluationRubric } from '../features/kata-instruction/domain/KataEvaluationRubric';
 
 export class KataInstructionUI {
-  private readonly kataFeature: KataInstructionFeature;
+  private readonly preloadedKataInstruction?: KataInstruction;
+  private readonly preloadedRubric?: KataEvaluationRubric;
 
-  constructor() {
-    this.kataFeature = new KataInstructionFeature();
+  constructor(
+    preloadedKataInstruction?: KataInstruction,
+    preloadedRubric?: KataEvaluationRubric
+  ) {
+    this.preloadedKataInstruction = preloadedKataInstruction;
+    this.preloadedRubric = preloadedRubric;
+  }
+
+  /**
+   * Gets the preloaded kata instruction if available
+   */
+  public getPreloadedKataInstruction(): KataInstruction | undefined {
+    return this.preloadedKataInstruction;
+  }
+
+  /**
+   * Gets the preloaded evaluation rubric if available
+   */
+  public getPreloadedRubric(): KataEvaluationRubric | undefined {
+    return this.preloadedRubric;
   }
 
   public async showKataInstructionSelection(): Promise<void> {
-    console.log(chalk.blue.bold('\n=== Kata Instruction Files ===\n'));
+    console.log(chalk.blue.bold('\n=== Kata Instruction ===\n'));
 
-    // List available kata files
-    const listResult = await this.kataFeature.listAvailableKatas();
-
-    if (!listResult.success) {
-      console.log(chalk.red(`Error: ${listResult.error.message}`));
-      return;
+    if (this.preloadedKataInstruction) {
+      this.renderKata(this.preloadedKataInstruction);
+      await inquirer.prompt([
+        {
+          type: 'input',
+          name: 'continue',
+          message: chalk.gray('Press Enter to continue...'),
+        },
+      ]);
+    } else {
+      console.log(chalk.yellow('No kata instruction preloaded. Check your configuration.\n'));
+      await inquirer.prompt([
+        {
+          type: 'input',
+          name: 'continue',
+          message: chalk.gray('Press Enter to continue...'),
+        },
+      ]);
     }
-
-    if (listResult.value.length === 0) {
-      console.log(chalk.yellow('No JSON files found in inputData folder.'));
-      return;
-    }
-
-    // Let user select a file
-    const answer = await inquirer.prompt<{ kataFile: string }>([
-      {
-        type: 'list',
-        name: 'kataFile',
-        message: 'Select a kata instruction file to view:',
-        choices: [...listResult.value, new inquirer.Separator(), 'Back to main menu'],
-      },
-    ]);
-
-    if (answer.kataFile === 'Back to main menu') {
-      return;
-    }
-
-    // Load and display the selected kata instruction file
-    await this.displayKataFile(answer.kataFile);
   }
 
   public async showRubricSelection(): Promise<void> {
-    console.log(chalk.blue.bold('\n=== Rubric Instruction Files ===\n'));
+    console.log(chalk.blue.bold('\n=== Evaluation Rubric ===\n'));
 
-    // List available rubric files
-    const listResult = await this.kataFeature.listAvailableKatas();
-
-    if (!listResult.success) {
-      console.log(chalk.red(`Error: ${listResult.error.message}`));
-      return;
-    }
-
-    if (listResult.value.length === 0) {
-      console.log(chalk.yellow('No JSON files found in inputData folder.'));
-      return;
-    }
-
-    // Let user select a file
-    const answer = await inquirer.prompt<{ rubricFile: string }>([
-      {
-        type: 'list',
-        name: 'rubricFile',
-        message: 'Select a rubric instruction file to view:',
-        choices: [...listResult.value, new inquirer.Separator(), 'Back to main menu'],
-      },
-    ]);
-
-    if (answer.rubricFile === 'Back to main menu') {
-      return;
-    }
-
-    // Load and display the selected rubric file
-    await this.displayRubricFile(answer.rubricFile);
-  }
-
-  private async displayKataFile(filename: string): Promise<void> {
-    const kataResult = await this.kataFeature.loadKataInstruction(filename);
-
-    if (kataResult.success) {
-      this.renderKata(kataResult.value);
+    if (this.preloadedRubric) {
+      this.renderRubric(this.preloadedRubric);
+      await inquirer.prompt([
+        {
+          type: 'input',
+          name: 'continue',
+          message: chalk.gray('Press Enter to continue...'),
+        },
+      ]);
     } else {
-      console.log(chalk.red(`\nError loading kata file: ${kataResult.error.message}\n`));
-      return;
+      console.log(chalk.yellow('No evaluation rubric preloaded. Check your configuration.\n'));
+      await inquirer.prompt([
+        {
+          type: 'input',
+          name: 'continue',
+          message: chalk.gray('Press Enter to continue...'),
+        },
+      ]);
     }
-
-    // Wait for user to press enter
-    await inquirer.prompt([
-      {
-        type: 'input',
-        name: 'continue',
-        message: chalk.gray('Press Enter to continue...'),
-      },
-    ]);
-  }
-
-  private async displayRubricFile(filename: string): Promise<void> {
-    const rubricResult = await this.kataFeature.loadKataEvaluationRubric(filename);
-
-    if (rubricResult.success) {
-      this.renderRubric(rubricResult.value);
-    } else {
-      console.log(chalk.red(`\nError loading rubric file: ${rubricResult.error.message}\n`));
-      return;
-    }
-
-    // Wait for user to press enter
-    await inquirer.prompt([
-      {
-        type: 'input',
-        name: 'continue',
-        message: chalk.gray('Press Enter to continue...'),
-      },
-    ]);
   }
 
   private renderKata(kata: KataInstruction): void {

@@ -6,6 +6,9 @@ import { CodeExtractorFeature } from '../features/code-extractor/CodeExtractorFe
 import { KataEvaluatorFeature } from '../features/kata-evaluator/KataEvaluatorFeature';
 import { KataEvaluationRubricService } from '../features/kata-instruction/services/KataEvaluationRubricService';
 import { KataInstructionUI } from './KataInstructionUI';
+import { KataFileConfig } from '../services/KataFileConfig';
+import { KataInstruction } from '../features/kata-instruction/domain/KataInstruction';
+import { KataEvaluationRubric } from '../features/kata-instruction/domain/KataEvaluationRubric';
 
 export class KataSolverConversationUI {
   private readonly facade: KataSolverFacade;
@@ -13,14 +16,22 @@ export class KataSolverConversationUI {
   private readonly kataEvaluator: KataEvaluatorFeature;
   private readonly rubricService: KataEvaluationRubricService;
   private readonly kataInstructionUI: KataInstructionUI;
+  private readonly config: KataFileConfig;
   private evaluationOrdinal: number;
 
-  constructor() {
+  constructor(
+    preloadedKataInstruction?: KataInstruction,
+    preloadedRubric?: KataEvaluationRubric
+  ) {
     this.facade = new KataSolverFacade();
     this.codeExtractor = new CodeExtractorFeature();
     this.kataEvaluator = new KataEvaluatorFeature();
-    this.rubricService = new KataEvaluationRubricService();
-    this.kataInstructionUI = new KataInstructionUI();
+    this.config = new KataFileConfig();
+    this.rubricService = new KataEvaluationRubricService(this.config);
+    this.kataInstructionUI = new KataInstructionUI(
+      preloadedKataInstruction,
+      preloadedRubric
+    );
     this.evaluationOrdinal = 0;
   }
 
@@ -29,7 +40,7 @@ export class KataSolverConversationUI {
    */
   public async start(): Promise<void> {
     console.log(chalk.blue.bold('\n=== KataSolver Conversation ==='));
-    console.log(chalk.gray('Commands: /kata - Show kata instructions | /evaluate - Extract and evaluate code | /help - Show help | /exit - End conversation\n'));
+    console.log(chalk.gray('Commands: /kata - Kata instructions | /rubric - Evaluation rubric | /evaluate - Evaluate code | /help - Help | /exit - Exit\n'));
 
     let conversationId: string | undefined;
 
@@ -60,6 +71,12 @@ export class KataSolverConversationUI {
         continue;
       }
 
+      // Handle /rubric command
+      if (userInput.trim() === '/rubric') {
+        await this.handleRubricCommand();
+        continue;
+      }
+
       // Handle /evaluate command (requires active conversation)
       if (userInput.trim() === '/evaluate') {
         if (!conversationId) {
@@ -67,6 +84,13 @@ export class KataSolverConversationUI {
           continue;
         }
         await this.handleEvaluateCommand(conversationId);
+        continue;
+      }
+
+      // Check for invalid commands (starts with / but not a valid command)
+      if (userInput.trim().startsWith('/')) {
+        console.log(chalk.red(`\nUnknown command: ${userInput.trim()}`));
+        console.log(chalk.yellow('Type /help to see available commands.\n'));
         continue;
       }
 
@@ -165,12 +189,12 @@ export class KataSolverConversationUI {
 
     // Load evaluation rubric
     let evaluationSpinner = ora('Loading evaluation rubric...').start();
-    const rubricResult = await this.rubricService.loadRubric('kata_evaluation_rubric.json');
+    const rubricResult = await this.rubricService.loadRubric(this.config.defaultRubricFile);
 
     if (!rubricResult.success) {
       evaluationSpinner.fail('Error loading rubric');
       console.log(chalk.red('Error: ' + rubricResult.error.message));
-      console.log(chalk.yellow('Make sure kata_evaluation_rubric.json exists in src/inputData/'));
+      console.log(chalk.yellow(`Make sure ${this.config.defaultRubricFile} exists in ${this.config.inputDataPath}`));
       return;
     }
 
@@ -217,12 +241,20 @@ export class KataSolverConversationUI {
   }
 
   /**
+   * Handles the /rubric command - loads and displays evaluation rubric
+   */
+  private async handleRubricCommand(): Promise<void> {
+    await this.kataInstructionUI.showRubricSelection();
+  }
+
+  /**
    * Shows available commands
    */
   private showHelp(): void {
     console.log(chalk.blue.bold('\n=== Available Commands ==='));
     console.log(chalk.white('  /evaluate') + chalk.gray(' - Extract code from conversation and send for evaluation'));
-    console.log(chalk.white('  /kata    ') + chalk.gray(' - Load and display kata instructions'));
+    console.log(chalk.white('  /kata    ') + chalk.gray(' - Display kata instructions'));
+    console.log(chalk.white('  /rubric  ') + chalk.gray(' - Display evaluation rubric'));
     console.log(chalk.white('  /help    ') + chalk.gray(' - Show this help message'));
     console.log(chalk.white('  /exit    ') + chalk.gray(' - End the conversation'));
     console.log('');

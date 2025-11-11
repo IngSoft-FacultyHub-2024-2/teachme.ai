@@ -5,18 +5,21 @@ import { Result, failure, success } from '../../shared/types/Result';
 import { KataInstruction } from './domain/KataInstruction';
 import { KataEvaluationRubric } from './domain/KataEvaluationRubric';
 import { KataEvaluationRubricService } from './services/KataEvaluationRubricService';
+import { KataFileConfig } from '../../services/KataFileConfig';
 
 export class KataInstructionFeature {
   private readonly inputDataPath: string;
   private readonly fileReader: FileReader;
   private readonly jsonParser: JsonKataParser;
   private readonly rubricService: KataEvaluationRubricService;
+  private readonly config: KataFileConfig;
 
-  constructor(inputDataPath?: string) {
-    this.inputDataPath = inputDataPath ?? path.join(process.cwd(), 'src', 'inputData');
+  constructor(config?: KataFileConfig) {
+    this.config = config ?? new KataFileConfig();
+    this.inputDataPath = this.config.inputDataPath;
     this.fileReader = new FileReader();
     this.jsonParser = new JsonKataParser();
-    this.rubricService = new KataEvaluationRubricService(this.inputDataPath);
+    this.rubricService = new KataEvaluationRubricService(this.config);
   }
 
   /**
