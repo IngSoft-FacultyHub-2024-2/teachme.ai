@@ -1,14 +1,14 @@
 {
-  "kata_name": "FizzBuzz",
+  "kata_name": "ChanPun",
   "stage_1": {
-    "problem": "Write a program that prints the numbers from 1 to 100. But for multiples of three print \"Fizz\" instead of the number and for the multiples of five print \"Buzz\". For numbers which are multiples of both three and five print \"FizzBuzz \".",
-    "sample_output": "1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz\n16\n17\nFizz\n19\nBuzz\n... etc up to 100"
+    "problem": "Write a program that prints the numbers from 1 to 100. But for multiples of two print \"Chan\" instead of the number and for the multiples of three print \"Pun\". For numbers which are multiples of both two and three print \"ChanPun\".",
+    "sample_output": "1 Chan Pun Chan 5 ChanPun 7 Chan Pun Chan 11 ChanPun 13 Chan Pun Chan 17 ... etc up to 100"
   },
   "stage_2": {
-    "problem": "new requirements:\nA number is fizz if it is divisible by 3 or if it has a 3 in it\nA number is buzz if it is divisible by 5 or if it has a 5 in it",
+    "problem": "new requirements:\nA number is Chan if it is divisible by 2 or if it has a 2 in it\nA number is Pun if it is divisible by 3 or if it has a 3 in it",
     "examples": [
-      "53 should return FizzBuzz (contains 5 and 3)",
-      "35 should return FizzBuzzBuzz (contains 3 and 5 and is divisible by 5)"
+      "23 should return ChanPun (contains 2 and 3)",
+      "32 should return ChanChanPun (contains 2 and 3 and is divisible by 2)"
     ]
   }
 }
