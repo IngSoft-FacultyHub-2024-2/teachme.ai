@@ -205,11 +205,15 @@ export class KataSolverConversationUI {
 
     evaluationSpinner = ora(`Evaluating code (attempt #${this.evaluationOrdinal})...`).start();
 
+    // Get kata instruction for context-aware evaluation
+    const kataInstruction = this.kataInstructionUI.getPreloadedKataInstruction();
+
     // Evaluate using KataEvaluatorFeature
     const evaluationResult = await this.kataEvaluator.evaluate(
       extracted,
       rubricResult.value,
-      this.evaluationOrdinal
+      this.evaluationOrdinal,
+      kataInstruction
     );
 
     if (!evaluationResult.success) {
