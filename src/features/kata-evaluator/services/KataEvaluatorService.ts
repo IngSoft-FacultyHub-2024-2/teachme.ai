@@ -3,6 +3,7 @@ import { KataEvaluatorConfig } from './KataEvaluatorConfig';
 import { KataEvaluation } from '../domain/KataEvaluation';
 import { ExtractedCode } from '../../code-extractor/domain/ExtractedCode';
 import { KataEvaluationRubric } from '../../kata-instruction/domain/KataEvaluationRubric';
+import { KataInstruction } from '../../kata-instruction/domain/KataInstruction';
 import { Result, success, failure } from '../../../shared/types/Result';
 
 /**
@@ -20,15 +21,17 @@ export class KataEvaluatorService {
    * @param extractedCode The code extracted from student submission
    * @param rubric The evaluation rubric
    * @param ordinal The evaluation sequence number
+   * @param kataInstruction Optional kata instruction for context-aware evaluation
    * @returns Result containing KataEvaluation or error
    */
   async evaluateCode(
     extractedCode: ExtractedCode,
     rubric: KataEvaluationRubric,
-    ordinal: number
+    ordinal: number,
+    kataInstruction?: KataInstruction
   ): Promise<Result<KataEvaluation>> {
     try {
-      const prompt = this.buildEvaluationPrompt(extractedCode, rubric);
+      const prompt = this.buildEvaluationPrompt(extractedCode, rubric, kataInstruction);
       const apiResponse = await this.callOpenAI(prompt);
 
       if (!apiResponse.success) {
@@ -53,13 +56,24 @@ export class KataEvaluatorService {
 
   private buildEvaluationPrompt(
     extractedCode: ExtractedCode,
-    rubric: KataEvaluationRubric
+    rubric: KataEvaluationRubric,
+    kataInstruction?: KataInstruction
   ): string {
     const rubricText = JSON.stringify(rubric, null, 2);
     const code = extractedCode.getCleanCode();
     const language = extractedCode.language || 'text';
 
-    return `You are a code evaluator. Evaluate the following code against the provided rubric.
+    let prompt = `You are a code evaluator. Evaluate the following code against the provided rubric.`;
+
+    if (kataInstruction) {
+      const instructionText = JSON.stringify(kataInstruction, null, 2);
+      prompt += `
+
+KATA INSTRUCTIONS:
+${instructionText}`;
+    }
+
+    prompt += `
 
 RUBRIC:
 ${rubricText}
@@ -69,7 +83,15 @@ CODE TO EVALUATE:
 ${code}
 \`\`\`
 
-Provide your evaluation based on the rubric criteria.`;
+Provide your evaluation based on the rubric criteria`;
+
+    if (kataInstruction) {
+      prompt += ` and verify that the code solves the kata problem described in the instructions`;
+    }
+
+    prompt += `.`;
+
+    return prompt;
   }
 
   private async callOpenAI(prompt: string): Promise<Result<string>> {
