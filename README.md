@@ -206,19 +206,33 @@ Files are loaded once at startup and cached in memory for instant access through
 
 Interactive AI-powered conversation mode for working through kata problems:
 
-**Available Commands:**
-- `/kata` - Display kata instructions during conversation
-- `/rubric` - Display evaluation rubric during conversation
-- `/evaluate` - Extract code from conversation and evaluate against rubric
-- `/help` - Show all available commands
-- `/exit` - End the conversation
+Interactive AI-powered conversation mode for working through kata problems.
 
-**Features:**
-- Conversational AI assistance for solving kata problems
-- Real-time code extraction from conversation history
-- Automated code evaluation against rubric criteria
-- Score tracking across multiple evaluation attempts
-- Invalid command detection with helpful error messages
+**Main Menu Options (before entering conversation):**
+- `View Kata Instruction` – Display the preloaded kata instructions.
+- `View Evaluation Rubric` – Display the preloaded evaluation rubric.
+- `Start KataSolver Conversation` – Enter interactive conversation mode with the assistant.
+- `Exit` – Quit the application.
+
+**Conversation Mode — Available Commands:**
+- `/kata`     : Display the currently preloaded kata instructions while in a conversation.
+- `/rubric`   : Display the currently preloaded evaluation rubric while in a conversation.
+- `/evaluate` : Extract the most-recent message's code from the conversation and evaluate it using the loaded rubric.
+- `/new`      : Start a new conversation (clears conversation state but preserves loaded kata & rubric).
+- `/help`     : Show the list of available in-conversation commands.
+- `/exit`     : End the conversation and return to the main menu.
+
+Notes and behaviour:
+- When you select `Start KataSolver Conversation`, you can either type a regular prompt (sent to the assistant), or enter any command above (commands must begin with `/`).
+- The `/evaluate` command extracts code from the last user or assistant message, displays the extracted code, asks for confirmation, then runs the evaluation using the configured rubric file.
+- If a command starts with `/` but is not recognized, the app will print an error and suggest using `/help`.
+
+**Features in Conversation Mode:**
+- Conversational AI assistance for solving kata problems.
+- Real-time code extraction from conversation history.
+- Automated code evaluation against rubric criteria.
+- Score tracking across multiple evaluation attempts (each `/evaluate` increments an attempt counter).
+- Interactive prompts for confirmations and feedback during evaluation.
 
 ### Kata Instruction Format
 
