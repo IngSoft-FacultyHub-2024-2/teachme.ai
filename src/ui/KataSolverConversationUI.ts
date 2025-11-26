@@ -135,15 +135,22 @@ export class KataSolverConversationUI {
       return;
     }
 
-    // Concatenate all messages from the conversation
-    const conversationText = historyResult.value.join('\n\n');
-
-    if (!conversationText.trim()) {
-      console.log(chalk.yellow('No conversation content to extract code from.'));
+    // Use only the last message from the conversation
+    const messages = historyResult.value;
+    if (messages.length === 0) {
+      console.log(chalk.yellow('No messages in the conversation.'));
       return;
     }
 
-    const spinner = ora('Extracting code from conversation...').start();
+    const lastMessage = messages[messages.length - 1];
+    if (!lastMessage || !lastMessage.trim()) {
+      console.log(chalk.yellow('Last message is empty.'));
+      return;
+    }
+
+    const conversationText: string = lastMessage;
+
+    const spinner = ora('Extracting code from last message...').start();
 
     // Extract code using CodeExtractor
     const extractionResult = await this.codeExtractor.extractCode(conversationText);
