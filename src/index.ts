@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 import ora from 'ora';
+import figlet from 'figlet';
 import { KataInstructionUI } from './ui/KataInstructionUI';
 import { KataFileConfig } from './services/KataFileConfig';
 import { KataInstructionFeature } from './features/kata-instruction/KataInstructionFeature';
@@ -90,9 +91,20 @@ class ConsoleApp {
   }
 
   private displayWelcome(): void {
-    console.log(chalk.blue.bold('\n================================='));
-    console.log(chalk.blue.bold('   Welcome to TeachMe.AI App'));
-    console.log(chalk.blue.bold('=================================\n'));
+    console.clear();
+    const banner = figlet.textSync('TeachMe.AI', {
+      font: 'Standard',
+      horizontalLayout: 'default',
+      verticalLayout: 'default',
+      width: 80,
+      whitespaceBreak: true
+    });
+
+    console.log(chalk.cyan.bold(banner));
+    console.log(chalk.gray('─'.repeat(80)));
+    console.log(chalk.yellow.bold('               Your AI-Powered Kata Learning Companion'));
+    console.log(chalk.gray('─'.repeat(80)));
+    console.log('');
   }
 
   private displayGoodbye(): void {
