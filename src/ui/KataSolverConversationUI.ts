@@ -40,7 +40,7 @@ export class KataSolverConversationUI {
    */
   public async start(): Promise<void> {
     console.log(chalk.blue.bold('\n=== KataSolver Conversation ==='));
-    console.log(chalk.gray('Commands: /kata - Kata instructions | /rubric - Evaluation rubric | /evaluate - Evaluate code | /help - Help | /exit - Exit\n'));
+    console.log(chalk.gray('Commands: /kata | /rubric | /evaluate | /new | /help | /exit\n'));
 
     let conversationId: string | undefined;
 
@@ -74,6 +74,20 @@ export class KataSolverConversationUI {
       // Handle /rubric command
       if (userInput.trim() === '/rubric') {
         await this.handleRubricCommand();
+        continue;
+      }
+
+      // Handle /new command
+      if (userInput.trim() === '/new') {
+        if (conversationId) {
+          console.log(chalk.cyan('\n--- Starting New Conversation ---'));
+          conversationId = undefined;
+          this.evaluationOrdinal = 0;
+          console.log(chalk.green('✓ New conversation started.'));
+          console.log(chalk.gray('  Kata instructions and rubric preserved.\n'));
+        } else {
+          console.log(chalk.yellow('No active conversation to reset.\n'));
+        }
         continue;
       }
 
@@ -266,6 +280,7 @@ export class KataSolverConversationUI {
     console.log(chalk.white('  /evaluate') + chalk.gray(' - Extract code from conversation and send for evaluation'));
     console.log(chalk.white('  /kata    ') + chalk.gray(' - Display kata instructions'));
     console.log(chalk.white('  /rubric  ') + chalk.gray(' - Display evaluation rubric'));
+    console.log(chalk.white('  /new     ') + chalk.gray(' - Start a new conversation (preserves kata & rubric)'));
     console.log(chalk.white('  /help    ') + chalk.gray(' - Show this help message'));
     console.log(chalk.white('  /exit    ') + chalk.gray(' - End the conversation'));
     console.log('');
