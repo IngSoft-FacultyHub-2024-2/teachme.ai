@@ -1,0 +1,14 @@
+{
+  "kata_name": "ChanPun",
+  "stage_1": {
+    "problem": "Write a program that prints the numbers from 1 to 100. But for multiples of two print \"Chan\" instead of the number and for the multiples of three print \"Pun\". For numbers which are multiples of both two and three print \"ChanPun\".",
+    "sample_output": "1 Chan Pun Chan 5 ChanPun 7 Chan Pun Chan 11 ChanPun 13 Chan Pun Chan 17 ... etc up to 100"
+  },
+  "stage_2": {
+    "problem": "new requirements:\nA number is Chan if it is divisible by 2 or if it has a 2 in it\nA number is Pun if it is divisible by 3 or if it has a 3 in it",
+    "examples": [
+      "23 should return ChanPun (contains 2 and 3)",
+      "32 should return ChanChanPun (contains 2 and 3 and is divisible by 2)"
+    ]
+  }
+}
