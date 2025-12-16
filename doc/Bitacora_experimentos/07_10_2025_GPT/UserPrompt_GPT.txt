@@ -1,0 +1,12 @@
+resuelve el kata
+
+Resuelve el fizzbuzz kata
+
+
+resuelve el problema de dado un numero si es múltiplo de 3 despliega fizz, si es multiplo de 5 despliega Buzz, si es multiplo de 5 y 3 despliega FizzBuzz, y si no despliega el numero
+
+escribe un programa que resuelva el problema de dado un numero si es múltiplo de 3 despliega fizz, si es multiplo de 5 despliega Buzz, si es multiplo de 5 y 3 despliega FizzBuzz, y si no despliega el numero
+
+add a for loop to convert numbers form 1 to 100
+
+understood, show me a prompt to do that

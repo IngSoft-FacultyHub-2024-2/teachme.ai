@@ -1,0 +1,3 @@
+Make FizzBuzz work
+
+Write a function that prints numbers 1-100 with Fizz/Buzz rules

@@ -1,0 +1,47 @@
+ guide me how to compile and create tarball
+
+● Here's how to compile and create the tarball:
+
+  📦 Build and Package Instructions
+
+  Step 1: Compile TypeScript to JavaScript
+
+  npm run build
+
+  This runs tsc and compiles all .ts files in src/ to .js files in dist/
+
+  Step 2: Create the Tarball
+
+  npm run package
+
+  This does two things:
+  1. Runs npm run build (compiles TypeScript)
+  2. Runs npm pack (creates the tarball)
+
+  Or you can do it manually:
+
+  # Step 1: Build
+  npm run build
+
+  # Step 2: Create tarball
+  npm pack
+
+  Step 3: Test the New Tarball
+
+  # Go to your test directory
+  cd D:\Downloads\test_tech
+
+  # Remove old installation
+  npm uninstall teachme-ai
+
+  # Install the new tarball (update the path to your workspace)
+  npm install D:\workspace\teachme.ai\teachme-ai-1.0.0.tgz
+
+  # Create .env file
+  cp node_modules/teachme-ai/.env.example .env
+  # Edit .env and add your OPENAI_API_KEY
+
+  # Run the app
+  npx teachme
+
+  Now the app should find the data files correctly! The errors about missing kata-instructions.json and kata_evaluation_rubric.json should be gone.

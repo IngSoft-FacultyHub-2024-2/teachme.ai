@@ -1,0 +1,131 @@
+resuelve el kata
+
+I need more specific information to generate code.
+
+Your prompt "resuelve el kata" (solve the kata) is too vague for me to provide a useful code solution. 
+
+**What I need from you:**
+- Which stage do you want me to work on (Stage 1 or Stage 2)?
+- What specific programming approach should I use?
+- What should the function be called?
+- Should I print the results or return them?
+- Any specific requirements about code structure?
+
+**Example of a more specific prompt:**
+"Write a Python function called fizzbuzz that prints numbers 1 to 100, replacing multiples of 3 with 'Fizz', multiples of 5 with 'Buzz', and multiples of both with 'FizzBuzz'"
+
+Please provide a more detailed prompt so I can generate the code you're looking for!
+
+
+resuelve el problema de fizzbuzz
+
+I need more specific information to generate code.
+
+Your prompt "resuelve el problema de fizzbuzz" (solve the fizzbuzz problem) is still too general for me to provide a targeted solution.
+
+**To help you craft a better prompt, consider specifying:**
+- Do you want Stage 1 (basic rules) or Stage 2 (with digit detection)?
+- Should it be a function or a script that runs immediately?
+- Do you want the output printed to console or returned as a list?
+- Any preferences for the coding approach (if/else chains, string concatenation, etc.)?
+- What should happen with the range of numbers (1-100 as specified, or configurable)?
+
+**A more effective prompt might be:**
+"Write a Python program that implements the basic FizzBuzz rules for numbers 1 to 100 and prints each result on a new line"
+
+Remember: specific prompts lead to better code generation. Try again with more details about what you want me to implement!
+
+
+resuelve el problema de dado un numero si es múltiplo de 3 despliega fizz, si es multiplo de 5 despliega Buzz, si es multiplo de 5 y 3 despliega FizzBuzz, y si no despliega el numero
+def check_fizzbuzz(number):
+    if number % 3 == 0 and number % 5 == 0:
+        return "FizzBuzz"
+    elif number % 3 == 0:
+        return "Fizz"
+    elif number % 5 == 0:
+        return "Buzz"
+    else:
+        return str(number)
+
+# Test with a sample number
+test_number = 15
+result = check_fizzbuzz(test_number)
+print(f"Input: {test_number}, Output: {result}")
+
+# Test with a few more examples
+test_cases = [3, 5, 15, 7]
+for num in test_cases:
+    print(f"{num}: {check_fizzbuzz(num)}")
+
+
+Input: 15, Output: FizzBuzz
+3: Fizz
+5: Buzz
+15: FizzBuzz
+7: 7
+
+```python
+def check_fizzbuzz(number):
+    if number % 3 == 0 and number % 5 == 0:
+        return "FizzBuzz"
+    elif number % 3 == 0:
+        return "Fizz"
+    elif number % 5 == 0:
+        return "Buzz"
+    else:
+        return str(number)
+
+# Test with a sample number
+test_number = 15
+result = check_fizzbuzz(test_number)
+print(f"Input: {test_number}, Output: {result}")
+
+# Test with a few more examples
+test_cases = [3, 5, 15, 7]
+for num in test_cases:
+    print(f"{num}: {check_fizzbuzz(num)}")
+```
+
+**🖥️ Code Output:**
+```
+Input: 15, Output: FizzBuzz
+3: Fizz
+5: Buzz
+15: FizzBuzz
+7: 7
+```
+
+---
+
+## **📊 Evaluation Results**
+
+### **Prompting Skills Evaluation: 5/15 (Basic Level)**
+
+**Strengths:**
+- ✅ Clear problem statement with specific rules
+- ✅ Explained all conditions (multiples of 3, 5, both)
+
+**Areas for Improvement:**
+- ❌ Didn't specify if you want a function for single numbers or the full 1-100 range
+- ❌ No mention of output format or how to use the code
+- ❌ Missing context about whether this solves the complete kata requirements
+
+**Feedback:** Your prompt clearly explained the logic rules, but consider specifying the scope (single number vs. full range 1-100) and desired output format.
+
+### **Code Quality Evaluation: 4/15 (Basic Level)**
+
+**Strengths:**
+- ✅ Correct basic logic implementation
+- ✅ Handles all specified conditions properly
+- ✅ Code executes without errors
+
+**Areas for Improvement:**
+- ❌ Only handles single numbers, not the full 1-100 range as per kata requirements
+- ❌ Basic structure without considering extensibility
+- ❌ No validation of the complete kata specification
+
+**Next Steps:** Consider prompting for the complete 1-100 range implementation to meet the full kata requirements, or ask for improvements to code structure and readability.
+
+**Ready for your next prompt to improve the solution!**
+
+

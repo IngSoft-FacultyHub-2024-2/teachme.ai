@@ -1,0 +1,8 @@
+https://chatgpt.com/share/68ed324c-4fe4-8011-a5e6-063aeb4e6317
+
+
+3 iteraciones de prompt sobre el GTP generado
+
+Muy buen resultado de aplicación de rúbrica de prompt y código en cada intento
+La interacción con el GTP es más simple que con un app
+
