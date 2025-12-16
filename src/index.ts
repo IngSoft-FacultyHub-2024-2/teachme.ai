@@ -156,21 +156,32 @@ class ConsoleApp {
 }
 
 async function main(): Promise<void> {
-  // Load environment variables: prefer project .env, fallback to .github/.env
-  const projectRoot = path.resolve(__dirname, '..');
-  const dotEnvPath = path.join(projectRoot, '.env');
-  const githubEnvPath = path.join(projectRoot, '.github', '.env');
+  // Load environment variables
+  // Priority:
+  // 1. .env in current working directory (where user runs the command)
+  // 2. .env in package root (for development)
+  // 3. .env in .github/ (for development)
 
-  if (fs.existsSync(dotEnvPath)) {
-    dotenv.config({ path: dotEnvPath });
+  const cwd = process.cwd();
+  const packageRoot = path.resolve(__dirname, '..');
+
+  const cwdEnvPath = path.join(cwd, '.env');
+  const packageEnvPath = path.join(packageRoot, '.env');
+  const githubEnvPath = path.join(packageRoot, '.github', '.env');
+
+  if (fs.existsSync(cwdEnvPath)) {
+    dotenv.config({ path: cwdEnvPath });
     console.log('Loaded environment from .env');
+  } else if (fs.existsSync(packageEnvPath)) {
+    dotenv.config({ path: packageEnvPath });
+    console.log('Loaded environment from package .env');
   } else if (fs.existsSync(githubEnvPath)) {
     dotenv.config({ path: githubEnvPath });
     console.log('Loaded environment from .github/.env');
   } else {
-    // Also allow dotenv's default behaviour (look for .env in cwd)
+    // No .env file found, dotenv will use process.env
     dotenv.config();
-    console.log('No .env found in project root or .github; loaded default dotenv config if present');
+    console.log('No .env file found; using environment variables if set');
   }
 
   const app = new ConsoleApp();
