@@ -12,7 +12,7 @@ export class OpenAIService {
   private readonly client: OpenAI;
   private readonly config: OpenAIConfig;
 
-  constructor(config: OpenAIConfig) {
+  public constructor(config: OpenAIConfig) {
     this.config = config;
     this.client = new OpenAI({
       apiKey: config.apiKey,
@@ -25,7 +25,7 @@ export class OpenAIService {
   ): Promise<Result<LLMResponse>> {
     try {
       // Validate prompt
-      if (!prompt || typeof prompt !== 'string' || prompt.trim() === '') {
+      if (!prompt || prompt.trim() === '') {
         return failure(new Error('Prompt must be a non-empty string'));
       }
       // Build a single input string that includes conversation history (preserve roles)

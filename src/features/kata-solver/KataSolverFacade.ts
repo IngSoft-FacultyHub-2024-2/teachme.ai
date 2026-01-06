@@ -1,21 +1,21 @@
 import { OpenAIConfig } from './services/OpenAIConfig';
 import { OpenAIService } from './services/OpenAIService';
-import { KataSolver } from './services/KataSolver';
+import { KataSolverService } from './services/KataSolverService';
 import { Result } from '../../shared/types/Result';
 
 /**
- * Facade for the KataSolver functionality
+ * Facade for the KataSolverService functionality
  * All interaction is via strings and conversation IDs only
  */
 export class KataSolverFacade {
   private readonly config: OpenAIConfig;
   private readonly openAIService: OpenAIService;
-  private readonly kataSolver: KataSolver;
+  private readonly kataSolver: KataSolverService;
 
-  constructor() {
+  public constructor() {
     this.config = new OpenAIConfig();
     this.openAIService = new OpenAIService(this.config);
-    this.kataSolver = new KataSolver(this.openAIService);
+    this.kataSolver = new KataSolverService(this.openAIService);
   }
 
   /**

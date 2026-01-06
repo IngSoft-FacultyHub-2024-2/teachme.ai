@@ -16,7 +16,7 @@ export interface TokenBreakdown {
  * Service for managing kata-solving dialogues with an LLM
  * Orchestrates conversation state and OpenAI API interactions
  */
-export class KataSolver {
+export class KataSolverService {
   private readonly openAIService: OpenAIService;
   private readonly conversations: Map<string, Conversation>;
 

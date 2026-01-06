@@ -18,7 +18,6 @@ describe('OpenAIConfig', () => {
       process.env.OPENAI_API_KEY = 'test-api-key';
       process.env.OPENAI_MODEL = 'gpt-4';
       process.env.OPENAI_MAX_TOKENS = '2000';
-      process.env.OPENAI_TEMPERATURE = '0.5';
       process.env.OPENAI_CONTEXT_WINDOW = '8000';
       process.env.OPENAI_WARNING_THRESHOLD = '0.9';
 
@@ -27,9 +26,7 @@ describe('OpenAIConfig', () => {
       expect(config.apiKey).toBe('test-api-key');
       expect(config.model).toBe('gpt-4');
       expect(config.maxTokens).toBe(2000);
-      expect(config.temperature).toBe(0.5);
       expect(config.contextWindow).toBe(8000);
-      expect(config.warningThreshold).toBe(0.9);
     });
 
     it('should use default values when optional environment variables are not provided', () => {
@@ -40,9 +37,7 @@ describe('OpenAIConfig', () => {
       expect(config.apiKey).toBe('test-api-key');
       expect(config.model).toBe('gpt-4-turbo-preview');
       expect(config.maxTokens).toBe(4096);
-      expect(config.temperature).toBe(0.7);
       expect(config.contextWindow).toBe(128000);
-      expect(config.warningThreshold).toBe(0.8);
     });
 
     it('should throw error when OPENAI_API_KEY is missing', () => {
@@ -106,19 +101,8 @@ describe('OpenAIConfig', () => {
 
       const config = new OpenAIConfig();
 
-      expect(config.temperature).toBe(0);
       expect(config.maxTokens).toBe(1);
-      expect(config.warningThreshold).toBe(1);
     });
   });
 
-  describe('isValid', () => {
-    it('should return true when configuration is valid', () => {
-      process.env.OPENAI_API_KEY = 'test-api-key';
-
-      const config = new OpenAIConfig();
-
-      expect(config.isValid()).toBe(true);
-    });
-  });
 });

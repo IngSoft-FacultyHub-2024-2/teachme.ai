@@ -120,7 +120,7 @@ class ConsoleApp {
         choices: [
           { name: 'View Kata Instruction', value: 'kata' },
           { name: 'View Evaluation Rubric', value: 'rubric' },
-          { name: 'Start KataSolver Conversation', value: 'conversation' },
+          { name: 'Start KataSolverService Conversation', value: 'conversation' },
           { name: 'Exit', value: 'exit' },
         ],
       },

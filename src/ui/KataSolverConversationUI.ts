@@ -39,7 +39,7 @@ export class KataSolverConversationUI {
    * Starts a conversation loop with KataSolverFacade
    */
   public async start(): Promise<void> {
-    console.log(chalk.blue.bold('\n=== KataSolver Conversation ==='));
+    console.log(chalk.blue.bold('\n=== KataSolverService Conversation ==='));
     console.log(chalk.gray('Commands: /kata | /rubric | /evaluate | /new | /help | /exit\n'));
 
     let conversationId: string | undefined;
