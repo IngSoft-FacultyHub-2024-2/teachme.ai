@@ -45,40 +45,7 @@ export class OpenAIService {
     }
   }
 
-  /**
-   * Send a prompt that includes developer instructions at the top.
-   * Developer instructions are prefixed as a reusable block so callers can pass a template.
-   */
-  public async sendWithDeveloperInstructions(
-    developerInstructions: string,
-    prompt: string,
-    conversationHistory?: Message[]
-  ): Promise<Result<LLMResponse>> {
-    // If developerInstructions is not provided, fall back to environment variable
-    const devInstrFromEnv = process.env.DEVELOPER_INSTRUCTIONS;
-    const finalDeveloperInstructions = (developerInstructions && typeof developerInstructions === 'string' && developerInstructions.trim() !== '')
-      ? developerInstructions
-      : (typeof devInstrFromEnv === 'string' && devInstrFromEnv.trim() !== '' ? devInstrFromEnv : '');
 
-    // Validate final developer instructions and prompt
-    if (!finalDeveloperInstructions || typeof finalDeveloperInstructions !== 'string' || finalDeveloperInstructions.trim() === '') {
-      return failure(new Error('Developer instructions must be provided either as an argument or via DEVELOPER_INSTRUCTIONS environment variable'));
-    }
-    if (!prompt || typeof prompt !== 'string' || prompt.trim() === '') {
-      return failure(new Error('Prompt must be a non-empty string'));
-    }
-
-    // Build input that places developer instructions first so the model sees them as system-level guidance
-  let input = `DEVELOPER_INSTRUCTIONS:\n${finalDeveloperInstructions.trim()}\n\n`;
-    if (conversationHistory && conversationHistory.length > 0) {
-      for (const msg of conversationHistory) {
-        input += `${msg.role.toUpperCase()}: ${msg.content}\n`;
-      }
-    }
-    input += `USER: ${prompt}`;
-
-    return await this.callResponses(input);
-  }
 
   /**
    * Internal helper that runs the Responses API call and parses the result into LLMResponse.
