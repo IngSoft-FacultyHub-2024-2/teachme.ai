@@ -1,0 +1,78 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # Triggers on tags like v1.0.0, v1.2.3, etc.
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write  # Required to create releases
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build and package
+        run: npm run package
+
+      - name: Extract version from tag
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            teachme-ai-*.tgz
+            .env.example
+          body: |
+            ## TeachMe.AI v${{ steps.get_version.outputs.VERSION }}
+
+            ### 📦 Installation
+
+            **Install from this release:**
+            ```bash
+            # Download teachme-ai-${{ steps.get_version.outputs.VERSION }}.tgz from assets below
+            npm install -g ./teachme-ai-${{ steps.get_version.outputs.VERSION }}.tgz
+            teachme
+            ```
+
+            **Use with npx:**
+            ```bash
+            npx teachme-ai
+            ```
+
+            ### ⚙️ Setup
+
+            1. Download `.env.example` from assets
+            2. Copy to `.env` and add your OpenAI API key
+            3. Run `teachme`
+
+            ### 📋 Requirements
+
+            - Node.js 20+
+            - OpenAI API key
+
+            ### 📖 Documentation
+
+            See [README.md](https://github.com/${{ github.repository }}/blob/main/README.md) for full documentation.
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -10,9 +10,14 @@ export class KataFileConfig {
   public readonly defaultRubricFile: string;
 
   constructor() {
+    // Use __dirname to locate files relative to the installed package
+    // __dirname in compiled code points to dist/services/
+    // So we go up two levels (../../) to reach package root, then into src/inputData
+    const defaultPath = path.join(__dirname, '..', '..', 'src', 'inputData');
+
     this.inputDataPath = this.getEnv(
       'KATA_INPUT_DATA_PATH',
-      path.join(process.cwd(), 'src', 'inputData')
+      defaultPath
     );
     this.defaultInstructionFile = this.getEnv(
       'KATA_DEFAULT_INSTRUCTION_FILE',
