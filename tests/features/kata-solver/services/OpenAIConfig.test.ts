@@ -105,4 +105,51 @@ describe('OpenAIConfig', () => {
     });
   });
 
+  describe('prompt configuration', () => {
+    it('should load promptId and promptVersion when provided', () => {
+      process.env.OPENAI_API_KEY = 'test-api-key';
+      process.env.OPENAI_PROMPT_ID = 'pmpt_123456';
+      process.env.OPENAI_PROMPT_VERSION = '5';
+
+      const config = new OpenAIConfig();
+
+      expect(config.promptId).toBe('pmpt_123456');
+      expect(config.promptVersion).toBe('5');
+    });
+
+    it('should use empty string for promptId when not specified', () => {
+      process.env.OPENAI_API_KEY = 'test-api-key';
+
+      const config = new OpenAIConfig();
+
+      expect(config.promptId).toBe('');
+    });
+
+    it('should use empty string for promptVersion when not specified', () => {
+      process.env.OPENAI_API_KEY = 'test-api-key';
+
+      const config = new OpenAIConfig();
+
+      expect(config.promptVersion).toBe('');
+    });
+
+    it('should use empty string for promptId when explicitly empty', () => {
+      process.env.OPENAI_API_KEY = 'test-api-key';
+      process.env.OPENAI_PROMPT_ID = '';
+
+      const config = new OpenAIConfig();
+
+      expect(config.promptId).toBe('');
+    });
+
+    it('should use empty string for promptVersion when explicitly empty', () => {
+      process.env.OPENAI_API_KEY = 'test-api-key';
+      process.env.OPENAI_PROMPT_VERSION = '';
+
+      const config = new OpenAIConfig();
+
+      expect(config.promptVersion).toBe('');
+    });
+  });
+
 });

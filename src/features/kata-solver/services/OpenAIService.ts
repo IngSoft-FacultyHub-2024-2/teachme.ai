@@ -53,10 +53,10 @@ export class OpenAIService {
   private async callResponses(input: string): Promise<Result<LLMResponse>> {
     let resp: any;
     try {
-      // Read optional prompt id/version from environment so callers can configure
-      // a reusable prompt template via env vars without changing code.
-      const promptId = process.env.OPENAI_PROMPT_ID;
-      const promptVersion = process.env.OPENAI_PROMPT_VERSION;
+      // Read optional prompt id/version from config which loads from environment
+      // This allows callers to configure a reusable prompt template via env vars.
+      const promptId = this.config.promptId;
+      const promptVersion = this.config.promptVersion;
 
       const params: any = {
         model: this.config.model,
@@ -64,10 +64,10 @@ export class OpenAIService {
         max_output_tokens: this.config.maxTokens,
       };
 
-      if (promptId && typeof promptId === 'string' && promptId.trim() !== '') {
+      if (promptId.trim() !== '') {
         params.prompt = {
           id: promptId.trim(),
-          ...(promptVersion && typeof promptVersion === 'string' && promptVersion.trim() !== '' ? { version: promptVersion.trim() } : {}),
+          ...(promptVersion.trim() !== '' ? { version: promptVersion.trim() } : {}),
         };
       }
 

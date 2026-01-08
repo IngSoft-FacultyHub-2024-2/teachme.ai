@@ -7,13 +7,16 @@ export class OpenAIConfig {
   public readonly model: string;
   public readonly maxTokens: number;
   public readonly contextWindow: number;
+  public readonly promptId: string;
+  public readonly promptVersion: string;
 
   public constructor() {
     this.apiKey = this.getRequiredEnv('OPENAI_API_KEY');
     this.model = this.getEnv('OPENAI_MODEL', 'gpt-4-turbo-preview');
     this.maxTokens = this.getNumberEnv('OPENAI_MAX_TOKENS', 4096);
     this.contextWindow = this.getNumberEnv('OPENAI_CONTEXT_WINDOW', 128000);
-
+    this.promptId = this.getEnv('OPENAI_PROMPT_ID', '');
+    this.promptVersion = this.getEnv('OPENAI_PROMPT_VERSION', '');
   }
 
 
