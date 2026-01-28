@@ -55,12 +55,12 @@ class ConsoleApp {
 
     if (instructionResult.success) {
       this.preloadedKataInstruction = instructionResult.value;
-      instructionSpinner.succeed(
-        chalk.green(`Loaded kata: ${instructionResult.value.name}`)
-      );
+      instructionSpinner.succeed(chalk.green(`Loaded kata: ${instructionResult.value.name}`));
     } else {
       instructionSpinner.warn(
-        chalk.yellow(`Could not load ${this.config.defaultInstructionFile}: ${instructionResult.error.message}`)
+        chalk.yellow(
+          `Could not load ${this.config.defaultInstructionFile}: ${instructionResult.error.message}`
+        )
       );
     }
 
@@ -72,20 +72,17 @@ class ConsoleApp {
 
     if (rubricResult.success) {
       this.preloadedRubric = rubricResult.value;
-      rubricSpinner.succeed(
-        chalk.green(`Loaded rubric: ${rubricResult.value.rubric.title}`)
-      );
+      rubricSpinner.succeed(chalk.green(`Loaded rubric: ${rubricResult.value.rubric.title}`));
     } else {
       rubricSpinner.warn(
-        chalk.yellow(`Could not load ${this.config.defaultRubricFile}: ${rubricResult.error.message}`)
+        chalk.yellow(
+          `Could not load ${this.config.defaultRubricFile}: ${rubricResult.error.message}`
+        )
       );
     }
 
     // Initialize KataUI with preloaded data
-    this.kataUI = new KataInstructionUI(
-      this.preloadedKataInstruction,
-      this.preloadedRubric
-    );
+    this.kataUI = new KataInstructionUI(this.preloadedKataInstruction, this.preloadedRubric);
 
     console.log('');
   }
@@ -97,7 +94,7 @@ class ConsoleApp {
       horizontalLayout: 'default',
       verticalLayout: 'default',
       width: 80,
-      whitespaceBreak: true
+      whitespaceBreak: true,
     });
 
     console.log(chalk.cyan.bold(banner));
@@ -168,7 +165,9 @@ async function main(): Promise<void> {
   } else {
     // Also allow dotenv's default behaviour (look for .env in cwd)
     dotenv.config();
-    console.log('No .env found in project root or .github; loaded default dotenv config if present');
+    console.log(
+      'No .env found in project root or .github; loaded default dotenv config if present'
+    );
   }
 
   const app = new ConsoleApp();

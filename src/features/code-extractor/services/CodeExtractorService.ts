@@ -83,9 +83,7 @@ export class CodeExtractorService {
 
       resp = await this.client.responses.create(params);
     } catch (apiError: any) {
-      return failure(
-        new Error(`OpenAI Responses API error: ${apiError?.message ?? apiError}`)
-      );
+      return failure(new Error(`OpenAI Responses API error: ${apiError?.message ?? apiError}`));
     }
 
     // Extract textual content
@@ -128,7 +126,11 @@ export class CodeExtractorService {
     const trimmedCode = code.trim();
 
     // Simple language detection based on common patterns
-    if (trimmedCode.includes('function') || trimmedCode.includes('const ') || trimmedCode.includes('let ')) {
+    if (
+      trimmedCode.includes('function') ||
+      trimmedCode.includes('const ') ||
+      trimmedCode.includes('let ')
+    ) {
       return 'typescript';
     }
     if (trimmedCode.includes('def ') || trimmedCode.includes('import ')) {

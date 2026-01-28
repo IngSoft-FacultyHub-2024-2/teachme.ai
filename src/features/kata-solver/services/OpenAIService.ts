@@ -45,8 +45,6 @@ export class OpenAIService {
     }
   }
 
-
-
   /**
    * Internal helper that runs the Responses API call and parses the result into LLMResponse.
    */

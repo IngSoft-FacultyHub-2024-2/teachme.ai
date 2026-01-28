@@ -64,9 +64,7 @@ export class JsonKataParser {
     const sampleOutput = rawStage.sample_output ?? rawStage.sampleOutput ?? rawStage.sample_output;
     const title = rawStage.title ?? `Stage ${stageNumber}`;
 
-    const requirements = Array.isArray(rawStage.requirements)
-      ? rawStage.requirements
-      : undefined;
+    const requirements = Array.isArray(rawStage.requirements) ? rawStage.requirements : undefined;
 
     return {
       stageNumber,

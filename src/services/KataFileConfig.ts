@@ -18,10 +18,7 @@ export class KataFileConfig {
       'KATA_DEFAULT_INSTRUCTION_FILE',
       'kata-instructions.json'
     );
-    this.defaultRubricFile = this.getEnv(
-      'KATA_DEFAULT_RUBRIC_FILE',
-      'kata_evaluation_rubric.json'
-    );
+    this.defaultRubricFile = this.getEnv('KATA_DEFAULT_RUBRIC_FILE', 'kata_evaluation_rubric.json');
 
     this.validate();
   }

@@ -19,7 +19,6 @@ export class OpenAIConfig {
     this.promptVersion = this.getEnv('OPENAI_PROMPT_VERSION', '');
   }
 
-
   /**
    * Gets a required environment variable
    * @param key - The environment variable key

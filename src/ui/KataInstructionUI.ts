@@ -7,10 +7,7 @@ export class KataInstructionUI {
   private readonly preloadedKataInstruction?: KataInstruction;
   private readonly preloadedRubric?: KataEvaluationRubric;
 
-  constructor(
-    preloadedKataInstruction?: KataInstruction,
-    preloadedRubric?: KataEvaluationRubric
-  ) {
+  constructor(preloadedKataInstruction?: KataInstruction, preloadedRubric?: KataEvaluationRubric) {
     this.preloadedKataInstruction = preloadedKataInstruction;
     this.preloadedRubric = preloadedRubric;
   }
@@ -134,7 +131,11 @@ export class KataInstructionUI {
         if (level.criteria && level.criteria.length > 0) {
           console.log(chalk.white('\n  Criteria:'));
           level.criteria.forEach((criterion) => {
-            console.log(chalk.gray(`    • [${criterion.score_range.min}-${criterion.score_range.max}] ${criterion.description}`));
+            console.log(
+              chalk.gray(
+                `    • [${criterion.score_range.min}-${criterion.score_range.max}] ${criterion.description}`
+              )
+            );
           });
         }
       });
@@ -147,7 +148,11 @@ export class KataInstructionUI {
 
       rubric.rubric.overall_classification.forEach((classification) => {
         console.log(chalk.cyan(`\n${classification.name}:`));
-        console.log(chalk.gray(`  Score Range: ${classification.score_range.min}-${classification.score_range.max}`));
+        console.log(
+          chalk.gray(
+            `  Score Range: ${classification.score_range.min}-${classification.score_range.max}`
+          )
+        );
       });
     }
 

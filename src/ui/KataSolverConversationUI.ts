@@ -19,19 +19,13 @@ export class KataSolverConversationUI {
   private readonly config: KataFileConfig;
   private evaluationOrdinal: number;
 
-  constructor(
-    preloadedKataInstruction?: KataInstruction,
-    preloadedRubric?: KataEvaluationRubric
-  ) {
+  constructor(preloadedKataInstruction?: KataInstruction, preloadedRubric?: KataEvaluationRubric) {
     this.facade = new KataSolverFacade();
     this.codeExtractor = new CodeExtractorFeature();
     this.kataEvaluator = new KataEvaluatorFeature();
     this.config = new KataFileConfig();
     this.rubricService = new KataEvaluationRubricService(this.config);
-    this.kataInstructionUI = new KataInstructionUI(
-      preloadedKataInstruction,
-      preloadedRubric
-    );
+    this.kataInstructionUI = new KataInstructionUI(preloadedKataInstruction, preloadedRubric);
     this.evaluationOrdinal = 0;
   }
 
@@ -94,7 +88,11 @@ export class KataSolverConversationUI {
       // Handle /evaluate command (requires active conversation)
       if (userInput.trim() === '/evaluate') {
         if (!conversationId) {
-          console.log(chalk.yellow('No active conversation. Start a conversation first before evaluating code.\n'));
+          console.log(
+            chalk.yellow(
+              'No active conversation. Start a conversation first before evaluating code.\n'
+            )
+          );
           continue;
         }
         await this.handleEvaluateCommand(conversationId);
@@ -215,7 +213,11 @@ export class KataSolverConversationUI {
     if (!rubricResult.success) {
       evaluationSpinner.fail('Error loading rubric');
       console.log(chalk.red('Error: ' + rubricResult.error.message));
-      console.log(chalk.yellow(`Make sure ${this.config.defaultRubricFile} exists in ${this.config.inputDataPath}`));
+      console.log(
+        chalk.yellow(
+          `Make sure ${this.config.defaultRubricFile} exists in ${this.config.inputDataPath}`
+        )
+      );
       return;
     }
 
@@ -277,10 +279,16 @@ export class KataSolverConversationUI {
    */
   private showHelp(): void {
     console.log(chalk.blue.bold('\n=== Available Commands ==='));
-    console.log(chalk.white('  /evaluate') + chalk.gray(' - Extract code from conversation and send for evaluation'));
+    console.log(
+      chalk.white('  /evaluate') +
+        chalk.gray(' - Extract code from conversation and send for evaluation')
+    );
     console.log(chalk.white('  /kata    ') + chalk.gray(' - Display kata instructions'));
     console.log(chalk.white('  /rubric  ') + chalk.gray(' - Display evaluation rubric'));
-    console.log(chalk.white('  /new     ') + chalk.gray(' - Start a new conversation (preserves kata & rubric)'));
+    console.log(
+      chalk.white('  /new     ') +
+        chalk.gray(' - Start a new conversation (preserves kata & rubric)')
+    );
     console.log(chalk.white('  /help    ') + chalk.gray(' - Show this help message'));
     console.log(chalk.white('  /exit    ') + chalk.gray(' - End the conversation'));
     console.log('');
