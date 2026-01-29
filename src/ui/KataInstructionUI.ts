@@ -7,7 +7,7 @@ export class KataInstructionUI {
   private readonly preloadedKataInstruction?: KataInstruction;
   private readonly preloadedRubric?: KataEvaluationRubric;
 
-  constructor(preloadedKataInstruction?: KataInstruction, preloadedRubric?: KataEvaluationRubric) {
+  public constructor(preloadedKataInstruction?: KataInstruction, preloadedRubric?: KataEvaluationRubric) {
     this.preloadedKataInstruction = preloadedKataInstruction;
     this.preloadedRubric = preloadedRubric;
   }
