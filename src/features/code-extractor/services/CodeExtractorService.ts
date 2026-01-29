@@ -87,7 +87,7 @@ export class CodeExtractorService {
     }
 
     // Extract textual content
-    let content = '';
+    let content = '';4
     if (typeof resp.output_text === 'string' && resp.output_text.trim() !== '') {
       content = resp.output_text;
     } else if (Array.isArray(resp.output)) {
