@@ -114,6 +114,10 @@ export class CodeExtractorService {
       return failure(new Error('No response content from OpenAI Responses API'));
     }
 
+    if (content.toUpperCase().includes('NO CODE')) {
+      return success('');
+    }
+
     return success(content);
   }
 
