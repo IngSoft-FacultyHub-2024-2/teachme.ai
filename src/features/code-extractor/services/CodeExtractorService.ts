@@ -83,13 +83,11 @@ export class CodeExtractorService {
 
       resp = await this.client.responses.create(params);
     } catch (apiError: any) {
-      return failure(
-        new Error(`OpenAI Responses API error: ${apiError?.message ?? apiError}`)
-      );
+      return failure(new Error(`OpenAI Responses API error: ${apiError?.message ?? apiError}`));
     }
 
     // Extract textual content
-    let content = '';
+    let content = '';4
     if (typeof resp.output_text === 'string' && resp.output_text.trim() !== '') {
       content = resp.output_text;
     } else if (Array.isArray(resp.output)) {
@@ -116,6 +114,10 @@ export class CodeExtractorService {
       return failure(new Error('No response content from OpenAI Responses API'));
     }
 
+    if (content.toUpperCase().includes('NO CODE')) {
+      return success('');
+    }
+
     return success(content);
   }
 
@@ -128,7 +130,11 @@ export class CodeExtractorService {
     const trimmedCode = code.trim();
 
     // Simple language detection based on common patterns
-    if (trimmedCode.includes('function') || trimmedCode.includes('const ') || trimmedCode.includes('let ')) {
+    if (
+      trimmedCode.includes('function') ||
+      trimmedCode.includes('const ') ||
+      trimmedCode.includes('let ')
+    ) {
       return 'typescript';
     }
     if (trimmedCode.includes('def ') || trimmedCode.includes('import ')) {

@@ -46,11 +46,7 @@ export class KataEvaluatorService {
 
       return success(evaluation);
     } catch (error) {
-      return failure(
-        error instanceof Error
-          ? error
-          : new Error('Unknown error during evaluation')
-      );
+      return failure(error instanceof Error ? error : new Error('Unknown error during evaluation'));
     }
   }
 
@@ -99,21 +95,20 @@ Provide your evaluation based on the rubric criteria`;
       const params: any = {
         model: this.config.model,
         input: prompt,
-        max_output_tokens: this.config.maxTokens
+        max_output_tokens: this.config.maxTokens,
       };
 
       if (this.config.promptId && this.config.promptId.trim() !== '') {
         params.prompt = {
           id: this.config.promptId.trim(),
-          ...(this.config.promptVersion
-            ? { version: this.config.promptVersion.trim() }
-            : {})
+          ...(this.config.promptVersion ? { version: this.config.promptVersion.trim() } : {}),
         };
       }
 
       const response = await this.client.responses.create(params);
 
-      const content = response.output_text ||
+      const content =
+        response.output_text ||
         (Array.isArray(response.output)
           ? response.output.map((o: any) => o.content).join('\n')
           : '');
@@ -124,11 +119,7 @@ Provide your evaluation based on the rubric criteria`;
 
       return success(content);
     } catch (error) {
-      return failure(
-        error instanceof Error
-          ? error
-          : new Error('OpenAI API call failed')
-      );
+      return failure(error instanceof Error ? error : new Error('OpenAI API call failed'));
     }
   }
 }

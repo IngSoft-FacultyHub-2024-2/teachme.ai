@@ -45,9 +45,9 @@ A number is Pun if it is divisible by 3 or if it has a 3 in it
 ============================================================
 
 ? Press Enter to continue... 
-? What would you like to do? Start KataSolver Conversation
+? What would you like to do? Start KataSolverService Conversation
 
-=== KataSolver Conversation ===
+=== KataSolverService Conversation ===
 Commands: /kata - Kata instructions | /rubric - Evaluation rubric | /evaluate - Evaluate code | /help - Help | /exit - Exit
 
 ? Enter your prompt or command: code a Python program using good coding practices and SOLID principles to sove Problem:Write a program that prints the numbers from 1 to 

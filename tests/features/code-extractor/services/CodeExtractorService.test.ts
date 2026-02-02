@@ -251,5 +251,35 @@ describe('CodeExtractorService', () => {
         expect(result.value.language).toBeUndefined();
       }
     });
+
+    it('should return success with empty code when API response contains "NO CODE"', async () => {
+      mockOpenAIClient.responses.create = jest.fn().mockResolvedValue({
+        output_text: 'NO CODE',
+        model: 'gpt-4-turbo-preview',
+        finish_reason: 'stop',
+      });
+
+      const result = await service.extractCode('some text without code');
+
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.value.hasCode()).toBe(false);
+      }
+    });
+
+    it('should return success with empty code when API response contains "NO CODE" regardless of case', async () => {
+      mockOpenAIClient.responses.create = jest.fn().mockResolvedValue({
+        output_text: 'no code found in input',
+        model: 'gpt-4-turbo-preview',
+        finish_reason: 'stop',
+      });
+
+      const result = await service.extractCode('some text without code');
+
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.value.hasCode()).toBe(false);
+      }
+    });
   });
 });

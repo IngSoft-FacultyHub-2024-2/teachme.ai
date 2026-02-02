@@ -2,7 +2,7 @@
  * Represents extracted code from a text input
  */
 export class ExtractedCode {
-  constructor(
+  public constructor(
     public readonly originalText: string,
     public readonly extractedCode: string,
     public readonly language?: string

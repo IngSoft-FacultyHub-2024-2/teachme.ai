@@ -22,7 +22,7 @@ describe('KataFileConfig', () => {
 
       const config = new KataFileConfig();
 
-      expect(config.inputDataPath).toBe('./custom/path');
+      expect(config.inputDataPath).toBe(path.resolve('./custom/path'));
       expect(config.defaultInstructionFile).toBe('custom-kata.json');
       expect(config.defaultRubricFile).toBe('custom-rubric.json');
     });
@@ -34,7 +34,7 @@ describe('KataFileConfig', () => {
 
       const config = new KataFileConfig();
 
-      expect(config.inputDataPath).toBe(path.join(process.cwd(), 'src', 'inputData'));
+      expect(config.inputDataPath).toBe(path.resolve('src/inputData'));
       expect(config.defaultInstructionFile).toBe('kata-instructions.json');
       expect(config.defaultRubricFile).toBe('kata_evaluation_rubric.json');
     });
@@ -46,7 +46,7 @@ describe('KataFileConfig', () => {
 
       const config = new KataFileConfig();
 
-      expect(config.inputDataPath).toBe('./custom/path');
+      expect(config.inputDataPath).toBe(path.resolve('./custom/path'));
       expect(config.defaultInstructionFile).toBe('kata-instructions.json');
       expect(config.defaultRubricFile).toBe('kata_evaluation_rubric.json');
     });
@@ -102,7 +102,7 @@ describe('KataFileConfig', () => {
       const config = new KataFileConfig();
       const fullPath = config.getDefaultInstructionPath();
 
-      expect(fullPath).toBe(path.join('./custom/path', 'my-kata.json'));
+      expect(fullPath).toBe(path.join(path.resolve('./custom/path'), 'my-kata.json'));
     });
 
     it('should return full path using defaults', () => {
@@ -113,7 +113,7 @@ describe('KataFileConfig', () => {
       const fullPath = config.getDefaultInstructionPath();
 
       expect(fullPath).toBe(
-        path.join(process.cwd(), 'src', 'inputData', 'kata-instructions.json')
+        path.join(path.resolve('src/inputData'), 'kata-instructions.json')
       );
     });
   });
@@ -126,7 +126,7 @@ describe('KataFileConfig', () => {
       const config = new KataFileConfig();
       const fullPath = config.getDefaultRubricPath();
 
-      expect(fullPath).toBe(path.join('./custom/path', 'my-rubric.json'));
+      expect(fullPath).toBe(path.join(path.resolve('./custom/path'), 'my-rubric.json'));
     });
 
     it('should return full path using defaults', () => {
@@ -137,7 +137,7 @@ describe('KataFileConfig', () => {
       const fullPath = config.getDefaultRubricPath();
 
       expect(fullPath).toBe(
-        path.join(process.cwd(), 'src', 'inputData', 'kata_evaluation_rubric.json')
+        path.join(path.resolve('src/inputData'), 'kata_evaluation_rubric.json')
       );
     });
   });

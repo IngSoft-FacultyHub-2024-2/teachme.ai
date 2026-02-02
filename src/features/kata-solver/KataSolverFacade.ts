@@ -1,21 +1,21 @@
 import { OpenAIConfig } from './services/OpenAIConfig';
 import { OpenAIService } from './services/OpenAIService';
-import { KataSolver } from './services/KataSolver';
+import { KataSolverService } from './services/KataSolverService';
 import { Result } from '../../shared/types/Result';
 
 /**
- * Facade for the KataSolver functionality
+ * Facade for the KataSolverService functionality
  * All interaction is via strings and conversation IDs only
  */
 export class KataSolverFacade {
   private readonly config: OpenAIConfig;
   private readonly openAIService: OpenAIService;
-  private readonly kataSolver: KataSolver;
+  private readonly kataSolver: KataSolverService;
 
-  constructor() {
+  public constructor() {
     this.config = new OpenAIConfig();
     this.openAIService = new OpenAIService(this.config);
-    this.kataSolver = new KataSolver(this.openAIService);
+    this.kataSolver = new KataSolverService(this.openAIService);
   }
 
   /**
@@ -23,18 +23,20 @@ export class KataSolverFacade {
    * @param initialPrompt - The initial user prompt
    * @returns Result with conversationId and assistant response (both strings)
    */
-  public async startConversation(initialPrompt: string): Promise<Result<{ conversationId: string; response: string }>> {
+  public async startConversation(
+    initialPrompt: string
+  ): Promise<Result<{ conversationId: string; response: string }>> {
     const result = await this.kataSolver.startConversation(initialPrompt);
     if (!result.success) return result;
     const conversation = result.value;
     const messages = conversation.messages;
-    const assistantMsg = messages.find(m => m.role === 'assistant');
+    const assistantMsg = messages.find((m) => m.role === 'assistant');
     return {
       success: true,
       value: {
         conversationId: conversation.id,
-        response: assistantMsg ? assistantMsg.content : ''
-      }
+        response: assistantMsg ? assistantMsg.content : '',
+      },
     };
   }
 
@@ -44,12 +46,15 @@ export class KataSolverFacade {
    * @param userMessage - The user's message
    * @returns Result with assistant response (string)
    */
-  public async continueConversation(conversationId: string, userMessage: string): Promise<Result<string>> {
+  public async continueConversation(
+    conversationId: string,
+    userMessage: string
+  ): Promise<Result<string>> {
     const result = await this.kataSolver.continueConversation(conversationId, userMessage);
     if (!result.success) return result;
     return {
       success: true,
-      value: result.value.content
+      value: result.value.content,
     };
   }
 
@@ -63,7 +68,7 @@ export class KataSolverFacade {
     if (!result.success) return result;
     return {
       success: true,
-      value: result.value.map(m => m.content)
+      value: result.value.map((m) => m.content),
     };
   }
 
@@ -90,7 +95,9 @@ export class KataSolverFacade {
    * @param conversationId - The ID of the conversation
    * @returns Result with token breakdown (numbers)
    */
-  public getConversationTokenBreakdown(conversationId: string): Result<{ totalTokens: number; messageCount: number }> {
+  public getConversationTokenBreakdown(
+    conversationId: string
+  ): Result<{ totalTokens: number; messageCount: number }> {
     return this.kataSolver.getConversationTokenBreakdown(conversationId);
   }
 }

@@ -242,10 +242,10 @@ Files are loaded once at startup and cached in memory for instant access through
 
 1. **View Kata Instruction** - Display the preloaded kata instructions
 2. **View Evaluation Rubric** - Display the preloaded evaluation rubric
-3. **Start KataSolver Conversation** - Interactive AI conversation for solving katas
+3. **Start KataSolverService Conversation** - Interactive AI conversation for solving katas
 4. **Exit** - Exit the application
 
-### KataSolver Conversation
+### KataSolverService Conversation
 
 Interactive AI-powered conversation mode for working through kata problems:
 
@@ -254,7 +254,7 @@ Interactive AI-powered conversation mode for working through kata problems.
 **Main Menu Options (before entering conversation):**
 - `View Kata Instruction` – Display the preloaded kata instructions.
 - `View Evaluation Rubric` – Display the preloaded evaluation rubric.
-- `Start KataSolver Conversation` – Enter interactive conversation mode with the assistant.
+- `Start KataSolverService Conversation` – Enter interactive conversation mode with the assistant.
 - `Exit` – Quit the application.
 
 **Conversation Mode — Available Commands:**
@@ -266,7 +266,7 @@ Interactive AI-powered conversation mode for working through kata problems.
 - `/exit`     : End the conversation and return to the main menu.
 
 Notes and behaviour:
-- When you select `Start KataSolver Conversation`, you can either type a regular prompt (sent to the assistant), or enter any command above (commands must begin with `/`).
+- When you select `Start KataSolverService Conversation`, you can either type a regular prompt (sent to the assistant), or enter any command above (commands must begin with `/`).
 - The `/evaluate` command extracts code from the last user or assistant message, displays the extracted code, asks for confirmation, then runs the evaluation using the configured rubric file.
 - If a command starts with `/` but is not recognized, the app will print an error and suggest using `/help`.
 

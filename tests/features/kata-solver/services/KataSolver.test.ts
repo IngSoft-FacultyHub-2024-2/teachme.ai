@@ -1,4 +1,4 @@
-import { KataSolver } from '../../../../src/features/kata-solver/services/KataSolver';
+import { KataSolverService } from '../../../../src/features/kata-solver/services/KataSolverService';
 import { OpenAIService } from '../../../../src/features/kata-solver/services/OpenAIService';
 import { LLMResponse } from '../../../../src/features/kata-solver/domain/LLMResponse';
 import { success, failure } from '../../../../src/shared/types/Result';
@@ -6,13 +6,13 @@ import { success, failure } from '../../../../src/shared/types/Result';
 // Mock the OpenAIService
 jest.mock('../../../../src/features/kata-solver/services/OpenAIService');
 
-describe('KataSolver', () => {
-  let kataSolver: KataSolver;
+describe('KataSolverService', () => {
+  let kataSolver: KataSolverService;
   let mockOpenAIService: jest.Mocked<OpenAIService>;
 
   beforeEach(() => {
     mockOpenAIService = new OpenAIService(null as never) as jest.Mocked<OpenAIService>;
-    kataSolver = new KataSolver(mockOpenAIService);
+    kataSolver = new KataSolverService(mockOpenAIService);
   });
 
   afterEach(() => {
