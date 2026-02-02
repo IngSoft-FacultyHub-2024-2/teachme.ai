@@ -10,17 +10,22 @@ export class KataFileConfig {
   public readonly defaultRubricFile: string;
 
   constructor() {
-    this.inputDataPath = this.getEnv(
-      'KATA_INPUT_DATA_PATH',
-      path.join(process.cwd(), 'src', 'inputData')
-    );
+    const rawInputDataPath = this.getEnv('KATA_INPUT_DATA_PATH', 'src/inputData');
     this.defaultInstructionFile = this.getEnv(
       'KATA_DEFAULT_INSTRUCTION_FILE',
       'kata-instructions.json'
     );
     this.defaultRubricFile = this.getEnv('KATA_DEFAULT_RUBRIC_FILE', 'kata_evaluation_rubric.json');
 
+    this.validateRawInputDataPath(rawInputDataPath);
+    this.inputDataPath = path.resolve(rawInputDataPath);
     this.validate();
+  }
+
+  private validateRawInputDataPath(rawPath: string): void {
+    if (!rawPath || rawPath.trim() === '') {
+      throw new Error('KATA_INPUT_DATA_PATH cannot be empty');
+    }
   }
 
   /**
