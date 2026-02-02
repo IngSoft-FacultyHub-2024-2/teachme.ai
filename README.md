@@ -7,6 +7,48 @@ Console-based TypeScript application with Docker support.
 - Node.js 20+ (for local development)
 - Docker and Docker Compose (for containerized deployment)
 
+## Quick Start (Executable Package)
+
+### Install from GitHub Release
+
+```bash
+# Download the latest release from GitHub
+# https://github.com/IngSoft-FacultyHub-2024-2/teachme.ai/releases
+
+# Install the downloaded tarball
+npm install -g ./teachme-ai-1.0.0.tgz
+
+# Run from anywhere
+teachme
+```
+
+### Install Globally from npm (Future)
+
+```bash
+# Once published to npm
+npm install -g teachme-ai
+
+# Run from anywhere
+teachme
+```
+
+### Use with npx (No Installation Required)
+
+```bash
+# Run directly without installation (once published to npm)
+npx teachme-ai
+```
+
+### Build Package for Distribution
+
+```bash
+# Build and create package tarball
+npm run package
+
+# This creates: teachme-ai-1.0.0.tgz
+# Share this file or upload to GitHub releases
+```
+
 ## Local Development
 
 ### Run locally (Windows PowerShell)
@@ -100,6 +142,7 @@ npx ts-node src/index.ts
 - `npm run dev` - Run in development mode with ts-node
 - `npm run build` - Compile TypeScript to JavaScript
 - `npm start` - Run the compiled application
+- `npm run package` - Build and create distributable package tarball
 - `npm run lint` - Check code quality with ESLint
 - `npm run lint:fix` - Auto-fix linting issues
 - `npm run format` - Format code with Prettier
@@ -350,6 +393,46 @@ This project follows TypeScript best practices with:
 - **TDD** (Test-Driven Development) approach
 
 See `claude.md` for detailed coding guidelines.
+
+## Creating Releases
+
+### Quick Release Guide
+
+```bash
+# 1. Update version
+npm version minor  # or major/patch
+
+# 2. Update CHANGELOG.md
+
+# 3. Commit and tag
+git add package.json CHANGELOG.md
+git commit -m "chore: bump version to vX.Y.Z"
+git tag -a vX.Y.Z -m "Release vX.Y.Z"
+
+# 4. Push
+git push origin main
+git push origin vX.Y.Z
+
+# 5. Build package
+npm run package
+
+# 6. Create GitHub release
+# Go to: https://github.com/IngSoft-FacultyHub-2024-2/teachme.ai/releases
+# Click "Draft a new release" and upload the tarball
+```
+
+For detailed release instructions, see [docs/RELEASE.md](docs/RELEASE.md).
+
+### Automated Releases
+
+Push a tag to automatically create a release:
+
+```bash
+git tag -a v1.1.0 -m "Release v1.1.0"
+git push origin v1.1.0
+```
+
+The GitHub Actions workflow will build, test, and create the release automatically.
 
 ## License
 
