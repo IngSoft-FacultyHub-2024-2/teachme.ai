@@ -1,37 +1,56 @@
-# Installation instructions
+# Installation Instructions
 
-**Go to your test directory.**
-```
-  Ex. cd D:\Downloads\test_teachme
-```
+## Quick Install
 
-**Remove the old installation (if already installed).**
-```
-  npm uninstall teachme-ai
+**Install tarball:**
+```bash
+npm install -g teachme-ai-1.0.0.tgz
 ```
 
-**Install the new tarball (update the path to your workspace)**
-```
-  npm install ..\teachme-ai-1.0.0.tgz
+**Add your OpenAI API key:**
+
+Create a `.env` file in your working directory:
+
+```bash
+# Windows PowerShell
+cp $(npm root -g)\teachme-ai\.env.example .env
+# Edit .env and add: OPENAI_API_KEY=your_key_here
+notepad .env
 ```
 
-**Copy the given .env file**
-```
-  cp  ..\.env .env
-```
-
-**Unzip the given inpuData folder to the working folder (test_teachme)**
-```
-Expand-Archive -Path "..\inputData.zip" -DestinationPath "."
+```bash
+# macOS / Linux
+cp $(npm root -g)/teachme-ai/.env.example .env
+# Edit .env and add: OPENAI_API_KEY=your_key_here
+nano .env
 ```
 
-**Copy the given  .env to the working folder (test_teachme) and change the KATA_INPUT_DATA_PATH to the inputData folder**
-```
-  KATA_INPUT_DATA_PATH=.\inputData
+**Run:**
+```bash
+teachme
 ```
 
-**Run the app**
+## Advanced: Custom Kata Files
+
+**Create custom directory:**
+```bash
+mkdir my-katas
+# Add your kata files to this directory
 ```
-  npx teachme
+
+**Update .env:**
+```bash
+KATA_INPUT_DATA_PATH=./my-katas
 ```
-  
+
+**Run:**
+```bash
+teachme
+```
+
+## Troubleshooting
+
+If you see "Cannot find kata files":
+1. Verify tarball contents: `tar -tzf teachme-ai-1.0.0.tgz | grep inputData`
+2. Check `.env` path or remove `KATA_INPUT_DATA_PATH` to use defaults
+3. Ensure you have the OpenAI API key configured in `.env`

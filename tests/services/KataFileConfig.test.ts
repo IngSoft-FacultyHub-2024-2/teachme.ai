@@ -34,7 +34,9 @@ describe('KataFileConfig', () => {
 
       const config = new KataFileConfig();
 
-      expect(config.inputDataPath).toBe(path.resolve('src/inputData'));
+      // Default path should be package root's inputData/
+      const expectedPath = path.join(path.resolve(__dirname, '..', '..'), 'inputData');
+      expect(config.inputDataPath).toBe(expectedPath);
       expect(config.defaultInstructionFile).toBe('kata-instructions.json');
       expect(config.defaultRubricFile).toBe('kata_evaluation_rubric.json');
     });
@@ -112,9 +114,12 @@ describe('KataFileConfig', () => {
       const config = new KataFileConfig();
       const fullPath = config.getDefaultInstructionPath();
 
-      expect(fullPath).toBe(
-        path.join(path.resolve('src/inputData'), 'kata-instructions.json')
+      const expectedPath = path.join(
+        path.resolve(__dirname, '..', '..'),
+        'inputData',
+        'kata-instructions.json'
       );
+      expect(fullPath).toBe(expectedPath);
     });
   });
 
@@ -136,9 +141,40 @@ describe('KataFileConfig', () => {
       const config = new KataFileConfig();
       const fullPath = config.getDefaultRubricPath();
 
-      expect(fullPath).toBe(
-        path.join(path.resolve('src/inputData'), 'kata_evaluation_rubric.json')
+      const expectedPath = path.join(
+        path.resolve(__dirname, '..', '..'),
+        'inputData',
+        'kata_evaluation_rubric.json'
       );
+      expect(fullPath).toBe(expectedPath);
+    });
+  });
+
+  describe('getDefaultInputDataPath', () => {
+    it('should resolve to package root inputData when no environment variable', () => {
+      delete process.env.KATA_INPUT_DATA_PATH;
+
+      const config = new KataFileConfig();
+      const expectedPath = path.join(path.resolve(__dirname, '..', '..'), 'inputData');
+
+      expect(config.inputDataPath).toBe(expectedPath);
+    });
+
+    it('should prefer environment variable over default', () => {
+      process.env.KATA_INPUT_DATA_PATH = './custom-path';
+
+      const config = new KataFileConfig();
+
+      expect(config.inputDataPath).toBe(path.resolve('./custom-path'));
+    });
+
+    it('should work with absolute paths in environment variable', () => {
+      const absolutePath = path.resolve('/absolute/custom/path');
+      process.env.KATA_INPUT_DATA_PATH = absolutePath;
+
+      const config = new KataFileConfig();
+
+      expect(config.inputDataPath).toBe(absolutePath);
     });
   });
 
