@@ -39,6 +39,23 @@ teachme
 npx teachme-ai
 ```
 
+### Configuration
+
+TeachMe.AI comes bundled with default kata files - no configuration needed.
+
+#### Optional: Custom Kata Files
+
+To use your own kata files:
+
+1. Create directory: `mkdir my-katas`
+2. Add your kata files
+3. Create `.env`: `KATA_INPUT_DATA_PATH=./my-katas`
+4. Run: `teachme`
+
+The app uses this priority:
+1. `KATA_INPUT_DATA_PATH` environment variable
+2. Default bundled kata files
+
 ### Build Package for Distribution
 
 ```bash
@@ -221,11 +238,11 @@ See `.env.example` for available configuration options.
 
 The application uses environment variables to configure kata instruction and evaluation rubric files:
 
-- `KATA_INPUT_DATA_PATH` - Directory containing kata files (default: `./src/inputData`)
+- `KATA_INPUT_DATA_PATH` - Directory containing kata files (default: bundled `inputData/` directory)
 - `KATA_DEFAULT_INSTRUCTION_FILE` - Default kata instruction file (default: `kata-instructions.json`)
 - `KATA_DEFAULT_RUBRIC_FILE` - Default evaluation rubric file (default: `kata_evaluation_rubric.json`)
 
-These files are preloaded on application startup for instant access.
+These files are preloaded on application startup for instant access. The default kata files are bundled with the package, so no configuration is required unless you want to use custom kata files.
 
 ## Features
 
