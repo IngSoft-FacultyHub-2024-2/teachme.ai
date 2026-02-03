@@ -2,11 +2,11 @@
 
 ## Overview
 
-The `/evaluate` command is a special feature in the KataSolver Conversation UI that automatically extracts code from the conversation history and sends it for evaluation.
+The `/evaluate` command is a special feature in the KataSolverService Conversation UI that automatically extracts code from the conversation history and sends it for evaluation.
 
 ## How It Works
 
-1. **User Types `/evaluate`**: During a conversation with the KataSolver, type `/evaluate` as your input
+1. **User Types `/evaluate`**: During a conversation with the KataSolverService, type `/evaluate` as your input
 2. **Code Extraction**: The system:
    - Retrieves the entire conversation history
    - Uses the CodeExtractor feature to extract code snippets from all messages
@@ -52,7 +52,7 @@ Detected Language: typescript
 
 ## Available Commands
 
-During a KataSolver conversation, you can use:
+During a KataSolverService conversation, you can use:
 
 - `/evaluate` - Extract code from conversation and send for evaluation
 - `/help` - Show available commands
@@ -117,7 +117,7 @@ npm test -- tests/ui/KataSolverConversationUI.test.ts
 
 The `/evaluate` command requires:
 
-- `OPENAI_API_KEY` - For both KataSolver and CodeExtractor
+- `OPENAI_API_KEY` - For both KataSolverService and CodeExtractor
 - `CODE_EXTRACTOR_PROMPT_ID` - The OpenAI prompt ID for code extraction
 - `CODE_EXTRACTOR_PROMPT_VERSION` - (Optional) Version of the extraction prompt
 

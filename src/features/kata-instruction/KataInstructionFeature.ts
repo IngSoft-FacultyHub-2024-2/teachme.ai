@@ -35,7 +35,10 @@ export class KataInstructionFeature {
    * @returns Result with array of kata filenames (.json files only)
    */
   public async listAvailableKatas(): Promise<Result<string[]>> {
-    const jsonFilesResult = await this.fileReader.listFilesWithExtension(this.inputDataPath, '.json');
+    const jsonFilesResult = await this.fileReader.listFilesWithExtension(
+      this.inputDataPath,
+      '.json'
+    );
     if (!jsonFilesResult.success) return jsonFilesResult;
 
     return success(jsonFilesResult.value);
@@ -46,9 +49,7 @@ export class KataInstructionFeature {
    * @param filename The kata filename (e.g., 'kata-instructions.json')
    * @returns Result with parsed KataInstruction
    */
-  public async loadKataInstruction(
-    filename: string
-  ): Promise<Result<KataInstruction>> {
+  public async loadKataInstruction(filename: string): Promise<Result<KataInstruction>> {
     const filePath = path.join(this.inputDataPath, filename);
     const ext = path.extname(filename).toLowerCase();
 

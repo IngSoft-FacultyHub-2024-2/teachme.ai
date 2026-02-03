@@ -39,6 +39,23 @@ teachme
 npx teachme-ai
 ```
 
+### Configuration
+
+TeachMe.AI comes bundled with default kata files - no configuration needed.
+
+#### Optional: Custom Kata Files
+
+To use your own kata files:
+
+1. Create directory: `mkdir my-katas`
+2. Add your kata files
+3. Create `.env`: `KATA_INPUT_DATA_PATH=./my-katas`
+4. Run: `teachme`
+
+The app uses this priority:
+1. `KATA_INPUT_DATA_PATH` environment variable
+2. Default bundled kata files
+
 ### Build Package for Distribution
 
 ```bash
@@ -221,11 +238,11 @@ See `.env.example` for available configuration options.
 
 The application uses environment variables to configure kata instruction and evaluation rubric files:
 
-- `KATA_INPUT_DATA_PATH` - Directory containing kata files (default: `./src/inputData`)
+- `KATA_INPUT_DATA_PATH` - Directory containing kata files (default: bundled `inputData/` directory)
 - `KATA_DEFAULT_INSTRUCTION_FILE` - Default kata instruction file (default: `kata-instructions.json`)
 - `KATA_DEFAULT_RUBRIC_FILE` - Default evaluation rubric file (default: `kata_evaluation_rubric.json`)
 
-These files are preloaded on application startup for instant access.
+These files are preloaded on application startup for instant access. The default kata files are bundled with the package, so no configuration is required unless you want to use custom kata files.
 
 ## Features
 
@@ -242,10 +259,10 @@ Files are loaded once at startup and cached in memory for instant access through
 
 1. **View Kata Instruction** - Display the preloaded kata instructions
 2. **View Evaluation Rubric** - Display the preloaded evaluation rubric
-3. **Start KataSolver Conversation** - Interactive AI conversation for solving katas
+3. **Start KataSolverService Conversation** - Interactive AI conversation for solving katas
 4. **Exit** - Exit the application
 
-### KataSolver Conversation
+### KataSolverService Conversation
 
 Interactive AI-powered conversation mode for working through kata problems:
 
@@ -254,7 +271,7 @@ Interactive AI-powered conversation mode for working through kata problems.
 **Main Menu Options (before entering conversation):**
 - `View Kata Instruction` – Display the preloaded kata instructions.
 - `View Evaluation Rubric` – Display the preloaded evaluation rubric.
-- `Start KataSolver Conversation` – Enter interactive conversation mode with the assistant.
+- `Start KataSolverService Conversation` – Enter interactive conversation mode with the assistant.
 - `Exit` – Quit the application.
 
 **Conversation Mode — Available Commands:**
@@ -266,7 +283,7 @@ Interactive AI-powered conversation mode for working through kata problems.
 - `/exit`     : End the conversation and return to the main menu.
 
 Notes and behaviour:
-- When you select `Start KataSolver Conversation`, you can either type a regular prompt (sent to the assistant), or enter any command above (commands must begin with `/`).
+- When you select `Start KataSolverService Conversation`, you can either type a regular prompt (sent to the assistant), or enter any command above (commands must begin with `/`).
 - The `/evaluate` command extracts code from the last user or assistant message, displays the extracted code, asks for confirmation, then runs the evaluation using the configured rubric file.
 - If a command starts with `/` but is not recognized, the app will print an error and suggest using `/help`.
 

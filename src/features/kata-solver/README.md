@@ -1,10 +1,10 @@
-# KataSolver Feature
+# KataSolverService Feature
 
 A dialog-based system for interacting with OpenAI's LLM to solve programming katas. This feature provides stateful conversation management with comprehensive token tracking.
 
 ## Overview
 
-The KataSolver feature enables multi-turn conversations with an LLM, maintaining full conversation history and tracking token usage across all interactions.
+The KataSolverService feature enables multi-turn conversations with an LLM, maintaining full conversation history and tracking token usage across all interactions.
 
 ## Architecture
 
@@ -41,7 +41,7 @@ The KataSolver feature enables multi-turn conversations with an LLM, maintaining
   - Handles conversation history
   - Returns structured responses with token tracking
 
-- **KataSolver**: Dialog orchestration
+- **KataSolverService**: Dialog orchestration
   - Manages multiple conversations
   - Provides dialog interface methods
   - Tracks tokens per conversation
@@ -50,7 +50,7 @@ The KataSolver feature enables multi-turn conversations with an LLM, maintaining
 
 - **KataSolverFacade**: Main entry point
   - Initializes all dependencies
-  - Provides access to KataSolver instance
+  - Provides access to KataSolverService instance
 
 ## Configuration
 
@@ -63,7 +63,6 @@ OPENAI_API_KEY=your_openai_api_key_here
 # Optional (defaults shown)
 OPENAI_MODEL=gpt-4-turbo-preview
 OPENAI_MAX_TOKENS=4096
-OPENAI_TEMPERATURE=0.7
 OPENAI_CONTEXT_WINDOW=128000
 OPENAI_WARNING_THRESHOLD=0.8
 ```
@@ -175,7 +174,7 @@ src/features/kata-solver/
 ├── services/
 │   ├── OpenAIConfig.ts         # Configuration management
 │   ├── OpenAIService.ts        # OpenAI API wrapper
-│   └── KataSolver.ts           # Dialog orchestration
+│   └── KataSolverService.ts           # Dialog orchestration
 ├── KataSolverFacade.ts         # Facade
 └── README.md                   # This file
 
@@ -187,7 +186,7 @@ tests/features/kata-solver/
 ├── services/
 │   ├── OpenAIConfig.test.ts
 │   ├── OpenAIService.test.ts
-│   └── KataSolver.test.ts
+│   └── KataSolverService.test.ts
 └── KataSolverFacade.test.ts
 ```
 
@@ -200,7 +199,7 @@ npm test -- kata-solver
 
 Run specific test file:
 ```bash
-npm test -- KataSolver.test.ts
+npm test -- KataSolverService.test.ts
 ```
 
 ## Future Enhancements

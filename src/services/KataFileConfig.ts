@@ -10,25 +10,22 @@ export class KataFileConfig {
   public readonly defaultRubricFile: string;
 
   constructor() {
-    // Use __dirname to locate files relative to the installed package
-    // __dirname in compiled code points to dist/services/
-    // So we go up two levels (../../) to reach package root, then into src/inputData
-    const defaultPath = path.join(__dirname, '..', '..', 'src', 'inputData');
-
-    this.inputDataPath = this.getEnv(
-      'KATA_INPUT_DATA_PATH',
-      defaultPath
-    );
+    const rawInputDataPath = this.getEnv('KATA_INPUT_DATA_PATH', this.getDefaultInputDataPath());
     this.defaultInstructionFile = this.getEnv(
       'KATA_DEFAULT_INSTRUCTION_FILE',
       'kata-instructions.json'
     );
-    this.defaultRubricFile = this.getEnv(
-      'KATA_DEFAULT_RUBRIC_FILE',
-      'kata_evaluation_rubric.json'
-    );
+    this.defaultRubricFile = this.getEnv('KATA_DEFAULT_RUBRIC_FILE', 'kata_evaluation_rubric.json');
 
+    this.validateRawInputDataPath(rawInputDataPath);
+    this.inputDataPath = path.resolve(rawInputDataPath);
     this.validate();
+  }
+
+  private validateRawInputDataPath(rawPath: string): void {
+    if (!rawPath || rawPath.trim() === '') {
+      throw new Error('KATA_INPUT_DATA_PATH cannot be empty');
+    }
   }
 
   /**
@@ -47,6 +44,21 @@ export class KataFileConfig {
     if (!this.defaultRubricFile || this.defaultRubricFile.trim() === '') {
       throw new Error('KATA_DEFAULT_RUBRIC_FILE cannot be empty');
     }
+  }
+
+  /**
+   * Gets the default input data path based on runtime environment
+   * In development: resolves to project root's inputData/
+   * In production: resolves to package root's inputData/
+   * @returns Default path to inputData directory
+   */
+  private getDefaultInputDataPath(): string {
+    // __dirname points to:
+    // - src/services/ when running TypeScript directly (tests, ts-node)
+    // - dist/services/ when running compiled JavaScript
+    // Go up 2 levels from services/ to reach package root in both cases
+    const packageRoot = path.resolve(__dirname, '..', '..');
+    return path.join(packageRoot, 'inputData');
   }
 
   /**

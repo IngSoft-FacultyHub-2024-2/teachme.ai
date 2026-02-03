@@ -57,12 +57,12 @@ class ConsoleApp {
 
     if (instructionResult.success) {
       this.preloadedKataInstruction = instructionResult.value;
-      instructionSpinner.succeed(
-        chalk.green(`Loaded kata: ${instructionResult.value.name}`)
-      );
+      instructionSpinner.succeed(chalk.green(`Loaded kata: ${instructionResult.value.name}`));
     } else {
       instructionSpinner.warn(
-        chalk.yellow(`Could not load ${this.config.defaultInstructionFile}: ${instructionResult.error.message}`)
+        chalk.yellow(
+          `Could not load ${this.config.defaultInstructionFile}: ${instructionResult.error.message}`
+        )
       );
     }
 
@@ -74,20 +74,17 @@ class ConsoleApp {
 
     if (rubricResult.success) {
       this.preloadedRubric = rubricResult.value;
-      rubricSpinner.succeed(
-        chalk.green(`Loaded rubric: ${rubricResult.value.rubric.title}`)
-      );
+      rubricSpinner.succeed(chalk.green(`Loaded rubric: ${rubricResult.value.rubric.title}`));
     } else {
       rubricSpinner.warn(
-        chalk.yellow(`Could not load ${this.config.defaultRubricFile}: ${rubricResult.error.message}`)
+        chalk.yellow(
+          `Could not load ${this.config.defaultRubricFile}: ${rubricResult.error.message}`
+        )
       );
     }
 
     // Initialize KataUI with preloaded data
-    this.kataUI = new KataInstructionUI(
-      this.preloadedKataInstruction,
-      this.preloadedRubric
-    );
+    this.kataUI = new KataInstructionUI(this.preloadedKataInstruction, this.preloadedRubric);
 
     console.log('');
   }
@@ -99,7 +96,7 @@ class ConsoleApp {
       horizontalLayout: 'default',
       verticalLayout: 'default',
       width: 80,
-      whitespaceBreak: true
+      whitespaceBreak: true,
     });
 
     console.log(chalk.cyan.bold(banner));
@@ -122,7 +119,7 @@ class ConsoleApp {
         choices: [
           { name: 'View Kata Instruction', value: 'kata' },
           { name: 'View Evaluation Rubric', value: 'rubric' },
-          { name: 'Start KataSolver Conversation', value: 'conversation' },
+          { name: 'Start KataSolverService Conversation', value: 'conversation' },
           { name: 'Exit', value: 'exit' },
         ],
       },
@@ -181,7 +178,9 @@ async function main(): Promise<void> {
   } else {
     // No .env file found, dotenv will use process.env
     dotenv.config();
-    console.log('No .env file found; using environment variables if set');
+    console.log(
+      'No .env found in project root or .github; loaded default dotenv config if present'
+    );
   }
 
   const app = new ConsoleApp();

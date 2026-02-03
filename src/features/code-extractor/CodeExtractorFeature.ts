@@ -9,7 +9,7 @@ import { Result } from '../../shared/types/Result';
 export class CodeExtractorFeature {
   private readonly service: CodeExtractorService;
 
-  constructor() {
+  public constructor() {
     const config = new OpenAIConfig();
     this.service = new CodeExtractorService(config);
   }

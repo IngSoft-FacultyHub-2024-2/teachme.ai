@@ -28,12 +28,7 @@ export class LLMResponse {
   public readonly finishReason: string;
   public readonly timestamp: Date;
 
-  constructor(
-    content: string,
-    usage: TokenUsage,
-    model: string,
-    finishReason: string
-  ) {
+  constructor(content: string, usage: TokenUsage, model: string, finishReason: string) {
     this.validateContent(content);
     this.validateUsage(usage);
 
@@ -61,11 +56,7 @@ export class LLMResponse {
    * @throws Error if validation fails
    */
   private validateUsage(usage: TokenUsage): void {
-    if (
-      usage.promptTokens < 0 ||
-      usage.completionTokens < 0 ||
-      usage.totalTokens < 0
-    ) {
+    if (usage.promptTokens < 0 || usage.completionTokens < 0 || usage.totalTokens < 0) {
       throw new Error('Token counts must be non-negative');
     }
 
@@ -94,12 +85,7 @@ export class LLMResponse {
    * @returns A new LLMResponse instance
    */
   public static fromJSON(json: LLMResponseJSON): LLMResponse {
-    const response = new LLMResponse(
-      json.content,
-      json.usage,
-      json.model,
-      json.finishReason
-    );
+    const response = new LLMResponse(json.content, json.usage, json.model, json.finishReason);
     // Override timestamp with the one from JSON
     (response as { timestamp: Date }).timestamp = new Date(json.timestamp);
     return response;

@@ -8,11 +8,7 @@ export class KataEvaluation {
   readonly evaluatedCode: string;
   readonly timestamp: Date;
 
-  constructor(
-    ordinal: number,
-    responseString: string,
-    evaluatedCode: string
-  ) {
+  constructor(ordinal: number, responseString: string, evaluatedCode: string) {
     this.ordinal = ordinal;
     this.responseString = responseString;
     this.evaluatedCode = evaluatedCode;

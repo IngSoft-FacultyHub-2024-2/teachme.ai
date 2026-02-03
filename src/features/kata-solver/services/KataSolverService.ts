@@ -16,7 +16,7 @@ export interface TokenBreakdown {
  * Service for managing kata-solving dialogues with an LLM
  * Orchestrates conversation state and OpenAI API interactions
  */
-export class KataSolver {
+export class KataSolverService {
   private readonly openAIService: OpenAIService;
   private readonly conversations: Map<string, Conversation>;
 
@@ -30,9 +30,7 @@ export class KataSolver {
    * @param initialPrompt - The initial user prompt
    * @returns Result containing the new Conversation or error
    */
-  public async startConversation(
-    initialPrompt: string
-  ): Promise<Result<Conversation>> {
+  public async startConversation(initialPrompt: string): Promise<Result<Conversation>> {
     // Validate prompt
     if (!initialPrompt || initialPrompt.trim() === '') {
       return failure(new Error('Prompt cannot be empty'));
@@ -50,11 +48,7 @@ export class KataSolver {
       }
 
       // Add user message
-      const userMessage = new Message(
-        'user',
-        initialPrompt,
-        llmResult.value.usage.promptTokens
-      );
+      const userMessage = new Message('user', initialPrompt, llmResult.value.usage.promptTokens);
       conversation.addMessage(userMessage);
 
       // Add assistant response
@@ -100,10 +94,7 @@ export class KataSolver {
 
     try {
       // Send message with conversation history
-      const llmResult = await this.openAIService.sendMessage(
-        userMessage,
-        conversation.messages
-      );
+      const llmResult = await this.openAIService.sendMessage(userMessage, conversation.messages);
 
       if (!llmResult.success) {
         return failure(llmResult.error);
@@ -192,9 +183,7 @@ export class KataSolver {
    * @param conversationId - The ID of the conversation
    * @returns Result containing the token breakdown or error
    */
-  public getConversationTokenBreakdown(
-    conversationId: string
-  ): Result<TokenBreakdown> {
+  public getConversationTokenBreakdown(conversationId: string): Result<TokenBreakdown> {
     const conversation = this.conversations.get(conversationId);
     if (!conversation) {
       return failure(new Error(`Conversation not found: ${conversationId}`));
