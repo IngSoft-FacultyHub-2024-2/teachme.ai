@@ -9,7 +9,7 @@
   "preferGlobal": true,
   "files": [
     "dist/",
-    "src/inputData/",
+    "inputData/",
     ".env.example",
     "CHANGELOG.md"
   ],
@@ -41,14 +41,10 @@
     "@types/node": "^25.1.0",
     "@typescript-eslint/eslint-plugin": "^8.54.0",
     "@typescript-eslint/parser": "^8.54.0",
-    "chalk": "^5.6.2",
-    "dotenv": "^17.2.3",
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
-    "inquirer": "9.3.8",
     "jest": "^30.2.0",
-    "ora": "^9.1.0",
     "prettier": "^3.8.1",
     "ts-jest": "^29.4.6",
     "ts-node": "^10.9.0",
@@ -56,7 +52,11 @@
   },
   "dependencies": {
     "@types/inquirer": "^9.0.9",
+    "chalk": "^5.6.2",
+    "dotenv": "^17.2.3",
     "figlet": "^1.10.0",
-    "openai": "^6.16.0"
+    "inquirer": "9.3.8",
+    "openai": "^6.16.0",
+    "ora": "^9.1.0"
   }
 }
